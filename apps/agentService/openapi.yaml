@@ -1,0 +1,248 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Agent API
+    version: 0.0.1
+paths:
+    /v1/agents:
+        get:
+            tags:
+                - Agent
+            operationId: Agent_GetAgentList
+            parameters:
+                - name: userId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.GetAgentListResponse'
+        post:
+            tags:
+                - Agent
+            operationId: Agent_CreateAgent
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.agent.v1.CreateAgentRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.CreateAgentResponse'
+    /v1/agents/{agentId}:
+        get:
+            tags:
+                - Agent
+            operationId: Agent_GetAgent
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.GetAgentResponse'
+        put:
+            tags:
+                - Agent
+            operationId: Agent_UpdateAgent
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.agent.v1.UpdateAgentRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.UpdateAgentResponse'
+        delete:
+            tags:
+                - Agent
+            operationId: Agent_DeleteAgent
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.DeleteAgentResponse'
+components:
+    schemas:
+        api.agent.v1.AgentInfo:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                avatar:
+                    type: string
+                systemPrompt:
+                    type: string
+                welcomeMessage:
+                    type: string
+                toolIds:
+                    type: array
+                    items:
+                        type: string
+                knowledgeBaseIds:
+                    type: array
+                    items:
+                        type: string
+                publishedVersion:
+                    type: string
+                enabled:
+                    type: boolean
+                userId:
+                    type: string
+                userName:
+                    type: string
+                toolPresetParams:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/api.agent.v1.ToolPresetParams'
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+                multiModel:
+                    type: boolean
+        api.agent.v1.CreateAgentRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                description:
+                    type: string
+                avatar:
+                    type: string
+                systemPrompt:
+                    type: string
+                welcomeMessage:
+                    type: string
+                toolIds:
+                    type: array
+                    items:
+                        type: string
+                knowledgeBaseIds:
+                    type: array
+                    items:
+                        type: string
+                toolPresetParams:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/api.agent.v1.ToolPresetParams'
+                multiModel:
+                    type: boolean
+        api.agent.v1.CreateAgentResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.agent.v1.AgentInfo'
+        api.agent.v1.DeleteAgentResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+        api.agent.v1.GetAgentListResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.agent.v1.AgentInfo'
+        api.agent.v1.GetAgentResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.agent.v1.AgentInfo'
+        api.agent.v1.ParamValues:
+            type: object
+            properties:
+                values:
+                    type: object
+                    additionalProperties:
+                        type: string
+        api.agent.v1.ToolParamCategory:
+            type: object
+            properties:
+                categories:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/api.agent.v1.ParamValues'
+        api.agent.v1.ToolPresetParams:
+            type: object
+            properties:
+                tools:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/api.agent.v1.ToolParamCategory'
+        api.agent.v1.UpdateAgentRequest:
+            type: object
+            properties:
+                agentId:
+                    type: string
+        api.agent.v1.UpdateAgentResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.agent.v1.AgentInfo'
+tags:
+    - name: Agent

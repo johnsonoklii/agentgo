@@ -1,0 +1,26 @@
+server:
+  addr: 0.0.0.0:8080
+  timeout: 5s
+
+auth:
+  jwt:
+    secret: "agentgo"
+    expire: 7200
+
+data:
+  redis:
+    addr: "127.0.0.1:6379"
+
+registry:
+  consul:
+    address: 127.0.0.1:8500
+    scheme: http
+
+proxy:
+  routes:
+    - prefix: /user/
+      target: http://user-service:8001
+    - prefix: /agent/
+      target: http://agent-service:8002
+    - prefix: /rag/
+      target: http://rag-service:8003

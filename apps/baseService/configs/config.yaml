@@ -1,0 +1,28 @@
+server:
+  version: v1
+  name: agentgo.baseService
+  grpc:
+    addr: :50051
+    timeout: 1s
+  http:
+    addr: :8081
+    timeout: 1s
+data:
+  database:
+    driver: mysql
+    source: lizq:ai5201314.@tcp(127.0.0.1:3306)/agentgo?charset=utf8mb4&parseTime=True&loc=Local
+  bizRedis:
+      addr: 127.0.0.1:6379
+
+trace:
+  endpoint: http://127.0.0.1:14268/api/traces
+
+auth:
+  jwt:
+    secret: "agentgo"
+    expire: 7200
+
+registry:
+  consul:
+    address: 127.0.0.1:8500
+    scheme: http

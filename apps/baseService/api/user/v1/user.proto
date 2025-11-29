@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package api.user.v1;
+import "google/api/annotations.proto";
+
+option go_package = "github.com/johnsonoklii/agentgo/apps/baseService/api/user/v1;v1";
+
+service User {
+  rpc Register (RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http) = {
+      post: "/v1/user/register"
+      body: "*"
+    };
+  }
+  rpc UnRegister (UnRegisterRequest) returns (UnRegisterResponse) {
+    option (google.api.http) = {
+      delete: "/v1/user/{uid}"
+    };
+  }
+  rpc Healthz (HealthzRequest) returns (HealthzResponse) {
+    option (google.api.http) = {
+      get: "/v1/healthz"
+    };
+  }
+}
+
+message HealthzRequest {}
+message HealthzResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UserInfo {
+  string uID = 1;
+  string userName = 2;
+  string mobile = 3;
+  int32  gender = 4;
+  int64 createdAt = 5;
+}
+
+message RegisterRequest {
+  string userName = 1;
+  string mobile = 2;
+  string password = 3;
+  int32  gender = 4;
+}
+
+message RegisterResponse {
+  int32  code = 1;
+  string message = 2;
+}
+
+message UnRegisterRequest {
+  string uid = 1;
+}
+
+message UnRegisterResponse {
+  int32 code = 1;
+  string message = 2;
+}

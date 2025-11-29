@@ -1,0 +1,161 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ""
+    version: 0.0.1
+paths:
+    /v1/auth/login:
+        post:
+            tags:
+                - Auth
+            operationId: Auth_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.LoginResponse'
+    /v1/auth/logout:
+        post:
+            tags:
+                - Auth
+            operationId: Auth_Logout
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.LogoutRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.LogoutResponse'
+    /v1/healthz:
+        get:
+            tags:
+                - User
+            operationId: User_Healthz
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.HealthzResponse'
+    /v1/user/register:
+        post:
+            tags:
+                - User
+            operationId: User_Register
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.RegisterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.RegisterResponse'
+    /v1/user/{uid}:
+        delete:
+            tags:
+                - User
+            operationId: User_UnRegister
+            parameters:
+                - name: uid
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.UnRegisterResponse'
+components:
+    schemas:
+        api.user.v1.HealthzResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+        api.user.v1.LoginRequest:
+            type: object
+            properties:
+                mobile:
+                    type: string
+                password:
+                    type: string
+        api.user.v1.LoginResponse:
+            type: object
+            properties:
+                token:
+                    type: string
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+        api.user.v1.LogoutRequest:
+            type: object
+            properties: {}
+        api.user.v1.LogoutResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+        api.user.v1.RegisterRequest:
+            type: object
+            properties:
+                userName:
+                    type: string
+                mobile:
+                    type: string
+                password:
+                    type: string
+                gender:
+                    type: integer
+                    format: int32
+        api.user.v1.RegisterResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+        api.user.v1.UnRegisterResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+tags:
+    - name: Auth
+    - name: User

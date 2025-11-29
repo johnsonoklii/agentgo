@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package gateway.config;
+option go_package = "github.com/johnsonoklii/agentgo/apps/gateway/internal/conf;conf";
+
+message Bootstrap {
+  Server server = 1;
+  Auth auth = 2;
+  Proxy proxy = 3;
+  Data data = 4;
+  Registry registry = 5;
+}
+
+message Data {
+  Redis redis = 1;
+}
+
+// HTTP 服务器配置
+message Server {
+  string addr = 1;
+  string timeout = 2;
+}
+
+message Auth {
+  message Jwt {
+    string secret = 1; // JWT 签名密钥
+    int32 expire = 2;         // token 过期时长
+  }
+  Jwt jwt = 1;
+}
+
+// 服务转发规则
+message Proxy {
+  repeated Route routes = 1;
+}
+
+// 单条路由
+message Route {
+  string prefix = 1;   // "/user/"
+  string target = 2;   // backend 地址，例如 "http://user-service:8001"
+}
+
+// Redis 配置
+message Redis {
+  string addr = 1;
+  string password = 2;
+}
+
+message Registry {
+  message Consul {
+    string address = 1;
+    string scheme = 2;
+  }
+
+  Consul consul = 1;
+}

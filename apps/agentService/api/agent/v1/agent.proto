@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package api.agent.v1;
+import "google/api/annotations.proto";
+
+option go_package = "github.com/johnsonoklii/agentgo/apps/agentService/api/agent/v1;v1";
+
+service Agent {
+  rpc CreateAgent (CreateAgentRequest) returns (CreateAgentResponse) {
+    option (google.api.http) = {
+      post: "/v1/agents"
+      body: "*"
+    };
+  }
+
+  rpc GetAgentList (GetAgentListRequest) returns (GetAgentListResponse) {
+    option (google.api.http) = {
+      get: "/v1/agents"
+    };
+  }
+
+  rpc GetAgent (GetAgentRequest) returns (GetAgentResponse) {
+    option (google.api.http) = {
+      get: "/v1/agents/{agentId}"
+    };
+  }
+
+  rpc UpdateAgent (UpdateAgentRequest) returns (UpdateAgentResponse) {
+    option (google.api.http) = {
+      put: "/v1/agents/{agentId}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteAgent (DeleteAgentRequest) returns (DeleteAgentResponse) {
+    option (google.api.http) = {
+      delete: "/v1/agents/{agentId}"
+    };
+  }
+
+}
+
+message AgentInfo {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  string avatar = 4;
+  string systemPrompt = 5;
+  string welcomeMessage = 6;
+  repeated string toolIds = 7;
+  repeated string knowledgeBaseIds = 8;
+  string publishedVersion = 9;
+  bool enabled = 10;
+  int64 userId = 11;
+  string userName = 12;
+  map<string, ToolPresetParams> toolPresetParams = 13;
+  int64 createdAt = 14;
+  int64 updatedAt = 15;
+  bool multiModel = 16;
+}
+
+message CreateAgentRequest {
+  string name = 1;
+  string description = 2;
+  string avatar = 3;
+  string systemPrompt = 4;
+  string welcomeMessage = 5;
+  repeated string toolIds = 6;
+  repeated string knowledgeBaseIds = 7;
+  map<string, ToolPresetParams> toolPresetParams = 8;
+  bool multiModel = 9;
+}
+
+message ToolPresetParams {
+  map<string, ToolParamCategory> tools = 1;  // tool_id -> 参数分类
+}
+
+message ToolParamCategory {
+  map<string, ParamValues> categories = 1;   // 分类名称 -> 参数值
+}
+
+message ParamValues {
+  map<string, string> values = 1;           // 参数名 -> 参数值
+}
+
+message CreateAgentResponse {
+  int32 code = 1;
+  string message = 2;
+  AgentInfo data = 3;
+}
+
+message GetAgentListRequest {
+  int64 userId = 1;
+}
+
+message GetAgentListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated AgentInfo data = 3;
+}
+
+message GetAgentRequest {
+  int64 agentId = 1;
+}
+
+message GetAgentResponse {
+  int32 code = 1;
+  string message = 2;
+  AgentInfo data = 3;
+}
+
+message UpdateAgentRequest {
+  int64 agentId = 1;
+}
+
+message UpdateAgentResponse {
+  int32 code = 1;
+  string message = 2;
+  AgentInfo data = 3;
+}
+
+message DeleteAgentRequest {
+  int64 agentId = 1;
+}
+
+message DeleteAgentResponse {
+  int32 code = 1;
+  string message = 2;
+}
