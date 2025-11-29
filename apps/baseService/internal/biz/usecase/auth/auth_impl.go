@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/biz/entity"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/biz/repo"
@@ -66,7 +65,6 @@ func (uc *authUsecase) Login(ctx context.Context, mobile string, password string
 
 func (uc *authUsecase) Logout(ctx context.Context, uid string) error {
 	key := jwt.GetRDSKeyToken(uid)
-	fmt.Println("key: ", key)
 	err := uc.data.BizRDB.Del(ctx, key).Err()
 	if err != nil {
 		uc.log.Errorf("userUsecase.Logout.Del error: %v", err)

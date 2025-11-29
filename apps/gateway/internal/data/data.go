@@ -1,50 +1,43 @@
 package data
 
 import (
+	"context"
+	"fmt"
 	"github.com/johnsonoklii/agentgo/apps/gateway/internal/conf"
 	"github.com/redis/go-redis/v9"
 	"sync"
 )
 
 var (
-	DTA  *Data
-	RDB  *redis.Client
 	once sync.Once
+	data *Data
+	err  error
 )
 
 type Data struct {
 	RDB *redis.Client
 }
 
-func GetData() *Data {
-	return DTA
-}
-
-func InitData(c *conf.Data) {
-	DTA, _ = NewData(c)
-	if DTA == nil {
-		panic("DTA is nil")
-	}
-}
-
-func NewData(c *conf.Data) (*Data, error) {
-	Init(c)
-	return &Data{RDB: RDB}, nil
-}
-
-func Init(c *conf.Data) {
+func Init(c *conf.Data) (*Data, error) {
 	once.Do(func() {
-		InitRDB(c)
+		rdb := redis.NewClient(&redis.Options{
+			Addr:     c.Redis.Addr,
+			Password: c.Redis.Password,
+		})
+
+		// Ping 检测 Redis 是否正常
+		if _, pingErr := rdb.Ping(context.Background()).Result(); pingErr != nil {
+			err = fmt.Errorf("redis connect error: %w", pingErr)
+			return
+		}
+
+		data = &Data{RDB: rdb}
 	})
 
-	if RDB == nil {
-		panic("RDB is nil")
-	}
+	return data, err
 }
 
-func InitRDB(c *conf.Data) {
-	RDB = redis.NewClient(&redis.Options{
-		Addr:     c.Redis.Addr,
-		Password: c.Redis.Password,
-	})
+// Get 全局获取 Data 实例
+func Get() *Data {
+	return data
 }

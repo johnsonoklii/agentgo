@@ -1,6 +1,8 @@
 package db
 
 import (
+	"context"
+	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/conf"
@@ -8,85 +10,82 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"gorm.io/gorm/schema"
 	slog "log"
 	"os"
-	"sync"
 	"time"
 )
 
-// ProviderSet is sql providers.
 var ProviderSet = wire.NewSet(NewData, NewUserRepo)
-
-var (
-	DB     *gorm.DB
-	BizRDB *redis.Client
-
-	once sync.Once
-)
 
 type Data struct {
 	DB     *gorm.DB
 	BizRDB *redis.Client
 }
 
-// NewData .
+// NewData is the DI provider for Data.
 func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
+	helper := log.NewHelper(logger)
+
+	db, err := newDB(c)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	rdb, err := newBizRDB(c)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	cleanup := func() {
-		log.NewHelper(logger).Info("closing the sql resources")
+		helper.Info("closing data resources")
+		sqlDB, err := db.DB()
+		if err == nil {
+			_ = sqlDB.Close()
+		}
+		_ = rdb.Close()
 	}
 
-	Init(c)
-
-	return &Data{DB: DB, BizRDB: BizRDB}, cleanup, nil
+	return &Data{
+		DB:     db,
+		BizRDB: rdb,
+	}, cleanup, nil
 }
 
-// NewDB .
-func Init(c *conf.Data) {
-	once.Do(func() {
-		InitDB(c)
-		InitBizRDB(c)
-	})
-
-	if DB == nil {
-		panic("DB is nil")
-	}
-
-	if BizRDB == nil {
-		panic("BizRDB is nil")
-	}
-}
-
-func InitDB(c *conf.Data) {
+func newDB(c *conf.Data) (*gorm.DB, error) {
 	newLogger := logger.New(
-		slog.New(os.Stdout, "\r\n", slog.LstdFlags), // io writer
+		slog.New(os.Stdout, "\r\n", slog.LstdFlags),
 		logger.Config{
-			SlowThreshold: time.Second, // 慢查询 SQL 阈值
-			Colorful:      true,        // 禁用彩色打印
-			//IgnoreRecordNotFoundError: false,
-			LogLevel: logger.Info, // Log lever
+			SlowThreshold: time.Second,
+			Colorful:      true,
+			LogLevel:      logger.Info,
 		},
 	)
 
 	db, err := gorm.Open(mysql.Open(c.Database.Source), &gorm.Config{
-		Logger:                                   newLogger,
-		DisableForeignKeyConstraintWhenMigrating: true,
-		NamingStrategy:                           schema.NamingStrategy{
-			//SingularTable: true, // 表名是否加 s
-		},
+		Logger: newLogger,
 	})
-
 	if err != nil {
-		log.Errorf("failed opening connection to sqlite: %v", err)
-		panic("failed to connect database")
+		return nil, fmt.Errorf("connect mysql failed: %w", err)
 	}
 
-	DB = db
+	// 设置连接池
+	sqlDB, _ := db.DB()
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	return db, nil
 }
 
-func InitBizRDB(c *conf.Data) {
-	BizRDB = redis.NewClient(&redis.Options{
+func newBizRDB(c *conf.Data) (*redis.Client, error) {
+	rdb := redis.NewClient(&redis.Options{
 		Addr:     c.BizRedis.Addr,
 		Password: c.BizRedis.Password,
 	})
+
+	if err := rdb.Ping(context.Background()).Err(); err != nil {
+		return nil, fmt.Errorf("connect redis failed: %w", err)
+	}
+
+	return rdb, nil
 }

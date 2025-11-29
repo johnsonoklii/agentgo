@@ -29,8 +29,6 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("addrs:", addrs)
-
 	// 随机选择一个实例
 	rand.Seed(time.Now().UnixNano())
 	target := addrs[rand.Intn(len(addrs))]

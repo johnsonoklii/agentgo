@@ -44,7 +44,7 @@ func JWTMiddleware(next http.Handler) http.Handler {
 
 func CheckToken(ctx context.Context, UID, token string) (bool, error) {
 	key := jwt.GetRDSKeyToken(UID)
-	val, err := data.GetData().RDB.Get(ctx, key).Result()
+	val, err := data.Get().RDB.Get(ctx, key).Result()
 	if err != nil {
 		return false, nil
 	}

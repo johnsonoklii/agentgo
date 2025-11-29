@@ -51,7 +51,10 @@ func main() {
 	jwt.InitSecret(bc.Auth.Jwt.Secret, time.Duration(bc.Auth.Jwt.Expire)*time.Second)
 
 	// db
-	data.InitData(bc.Data)
+	_, err := data.Init(bc.Data)
+	if err != nil {
+		panic(err)
+	}
 
 	// consul
 	consul, err := discovery.NewConsul(bc.Registry.Consul.Address)
