@@ -38,25 +38,57 @@ service Agent {
     };
   }
 
+  rpc PublishAgent (PublishAgentRequest) returns (PublishAgentResponse) {
+    option (google.api.http) = {
+      post: "/v1/agents/{agentId}/publish"
+      body: "*"
+    };
+  }
+
+  rpc GetAgentVersions (GetAgentVersionsRequest) returns (GetAgentVersionsResponse) {
+    option (google.api.http) = {
+      get: "/v1/agents/{agentId}/versions"
+    };
+  }
+
+  rpc GetAgentVersion (GetAgentVersionRequest) returns (GetAgentVersionResponse) {
+    option (google.api.http) = {
+      get: "/v1/agents/{agentId}/versions/{versionNumber}"
+    };
+  }
+
+  rpc GetAgentLatestVersion (GetAgentLatestVersionRequest) returns (GetAgentLatestVersionResponse) {
+    option (google.api.http) = {
+      get: "/v1/agents/{agentId}/versions/latest"
+    };
+  }
+
+  rpc ToggleAgentStatus (ToggleAgentStatusRequest) returns (ToggleAgentStatusResponse) {
+    option (google.api.http) = {
+      post: "/v1/agents/{agentId}/toggle-status"
+      body: "*"
+    };
+  }
+
 }
 
 message AgentInfo {
-  int64 id = 1;
-  string name = 2;
-  string description = 3;
-  string avatar = 4;
-  string systemPrompt = 5;
-  string welcomeMessage = 6;
-  repeated string toolIds = 7;
-  repeated string knowledgeBaseIds = 8;
-  string publishedVersion = 9;
-  bool enabled = 10;
-  int64 userId = 11;
-  string userName = 12;
-  map<string, ToolPresetParams> toolPresetParams = 13;
-  int64 createdAt = 14;
-  int64 updatedAt = 15;
-  bool multiModel = 16;
+  string agentVersionID = 1;
+  string agentID = 2;
+  string name = 3;
+  string description = 4;
+  string avatar = 6;
+  string systemPrompt = 7;
+  string welcomeMessage = 8;
+  repeated string toolIds = 9;
+  repeated string knowledgeBaseIds = 10;
+  string publishedVersion = 11;
+  bool enabled = 12;
+  string uid = 13;
+  map<string, ToolPresetParams> toolPresetParams = 14;
+  int64 createdAt = 15;
+  int64 updatedAt = 16;
+  bool multiModel = 17;
 }
 
 message CreateAgentRequest {
@@ -126,4 +158,85 @@ message DeleteAgentRequest {
 message DeleteAgentResponse {
   int32 code = 1;
   string message = 2;
+}
+
+message PublishAgentRequest {
+  string agentId = 1;
+  string versionNumber = 2;  // 版本号，如 1.0.0
+  string changeLog = 3;       // 版本更新日志
+}
+
+message PublishAgentResponse {
+  int32 code = 1;
+  string message = 2;
+  AgentVersionInfo data = 3;
+}
+
+message AgentVersionInfo {
+  string agentVersionID = 1;                // 版本唯一ID
+  string agentId = 2;           // 关联的Agent ID
+  string name = 3;              // Agent名称
+  string avatar = 4;            // Agent头像URL
+  string description = 5;       // Agent描述
+  string versionNumber = 6;     // 版本号
+  string systemPrompt = 7;      // 系统提示词
+  string welcomeMessage = 8;    // 欢迎消息
+  repeated string toolIds = 9;  // 工具ID列表
+  repeated string knowledgeBaseIds = 10; // 知识库ID列表
+  string changeLog = 11;        // 版本更新日志
+  int32 publishStatus = 12;     // 发布状态：1-审核中, 2-已发布, 3-拒绝, 4-已下架
+  string rejectReason = 13;     // 审核拒绝原因
+  int64 reviewTime = 14;        // 审核时间
+  int64 publishedAt = 15;       // 发布时间
+  string userId = 16;           // 创建者用户ID
+  map<string, ToolPresetParams> toolPresetParams = 17; // 工具预设参数
+  bool multiModal = 18;         // 是否支持多模态
+  int64 createdAt = 19;         // 创建时间
+  int64 updatedAt = 20;         // 更新时间
+}
+
+// 获取Agent所有版本
+message GetAgentVersionsRequest {
+  string agentId = 1;
+}
+
+message GetAgentVersionsResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated AgentVersionInfo data = 3;
+}
+
+// 获取Agent特定版本
+message GetAgentVersionRequest {
+  string agentId = 1;
+  string versionNumber = 2;
+}
+
+message GetAgentVersionResponse {
+  int32 code = 1;
+  string message = 2;
+  AgentVersionInfo data = 3;
+}
+
+// 获取Agent最新版本
+message GetAgentLatestVersionRequest {
+  string agentId = 1;
+}
+
+message GetAgentLatestVersionResponse {
+  int32 code = 1;
+  string message = 2;
+  AgentVersionInfo data = 3;
+}
+
+// 切换Agent启用/禁用状态
+message ToggleAgentStatusRequest {
+  string agentId = 1;
+  bool enabled = 2;  // true-启用, false-禁用
+}
+
+message ToggleAgentStatusResponse {
+  int32 code = 1;
+  string message = 2;
+  AgentInfo data = 3;
 }

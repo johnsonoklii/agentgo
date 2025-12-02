@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/go-kratos/kratos/v2/middleware"
 	khttp "github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/errorx/code"
+	"github.com/johnsonoklii/agentgo/pkg/errors/code"
 	"github.com/johnsonoklii/agentgo/pkg/jwt"
 )
 
@@ -12,7 +12,7 @@ func UserMiddleware(h middleware.Handler) middleware.Handler {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		r, ok := khttp.RequestFromServerContext(ctx)
 		if !ok {
-			return nil, code.ErrUserUnKnown
+			return nil, code.ErrReq
 		}
 
 		if IsWhiteList(r.URL.Path) {

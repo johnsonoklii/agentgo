@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/biz/usecase/user"
-	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/errorx/code"
+	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/errors/code"
 	"github.com/johnsonoklii/agentgo/pkg/jwt"
 	"regexp"
 

@@ -7,6 +7,7 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -20,11 +21,10 @@ func NewProxyHandler(consul *discovery.ConsulClient) *ProxyHandler {
 
 // 转发请求到后端服务
 func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("ProxyHandler.ServeHTTP")
 	serviceName := extractServiceName(r) // 根据路径或规则提取目标服务名
+	fmt.Println("serviceName: ", serviceName)
 	addrs, err := p.Consul.GetServiceAddresses(serviceName)
 	if err != nil {
-		fmt.Println("Error:", err)
 		http.Error(w, "service unavailable", http.StatusServiceUnavailable)
 		return
 	}
@@ -125,19 +125,26 @@ func (p *ProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // 提取服务名，可按规则解析路径，例如 /user/... => user-service
 func extractServiceName(r *http.Request) string {
 	path := r.URL.Path
+
 	if len(path) > 1 {
 		switch {
 		case path == "/logout":
 			return "" // 登出特殊处理，不走 Proxy
-		case path[:9] == "/v1/user/" || path[:9] == "/v1/auth/":
+
+		case strings.HasPrefix(path, "/v1/user"),
+			strings.HasPrefix(path, "/v1/auth"):
 			return "agentgo.baseService-http"
-		case path[:7] == "/agent/":
-			return "agent-service"
-		case path[:5] == "/rag/":
+
+		case strings.HasPrefix(path, "/v1/agents"):
+			return "agentgo.agentService-http"
+
+		case strings.HasPrefix(path, "v1/rag/"):
 			return "rag-service"
+
 		default:
 			return "default-service"
 		}
 	}
+
 	return "default-service"
 }

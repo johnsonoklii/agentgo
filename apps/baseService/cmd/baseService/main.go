@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -12,7 +11,6 @@ import (
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	consulAPI "github.com/hashicorp/consul/api"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/conf"
 	"github.com/johnsonoklii/agentgo/pkg/jwt"
 	"github.com/johnsonoklii/agentgo/pkg/utils"
@@ -39,7 +37,6 @@ func init() {
 }
 
 func newApp(logger log.Logger, c *conf.Server, gs *grpc.Server, hs *http.Server, rr registry.Registrar) *kratos.App {
-	//获取当前机器ip
 	ip, err := utils.GetLocalIP()
 	if err != nil {
 		panic(err)
@@ -50,7 +47,7 @@ func newApp(logger log.Logger, c *conf.Server, gs *grpc.Server, hs *http.Server,
 
 	// 创建带有元数据的服务实例用于gRPC
 	grpcInstance := &registry.ServiceInstance{
-		ID:      id + "-grpc",
+		ID:      id + "-base-grpc",
 		Name:    Name + "-grpc",
 		Version: Version,
 		Metadata: map[string]string{
@@ -61,7 +58,7 @@ func newApp(logger log.Logger, c *conf.Server, gs *grpc.Server, hs *http.Server,
 
 	//创建带有元数据的服务实例用于HTTP
 	httpInstance := &registry.ServiceInstance{
-		ID:      id + "-http",
+		ID:      id + "-base-http",
 		Name:    Name + "-http",
 		Version: Version,
 		Metadata: map[string]string{
@@ -119,18 +116,6 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
-	jwt.InitSecret(bc.Auth.Jwt.Secret, time.Duration(bc.Auth.Jwt.Expire)*time.Second)
-
-	// 初始化 Consul 客户端，供后续服务发现使用
-	consulConf := consulAPI.DefaultConfig()
-	consulConf.Address = bc.Registry.Consul.Address
-	consulConf.Scheme = bc.Registry.Consul.Scheme
-	consulClient, err := consulAPI.NewClient(consulConf)
-	if err != nil {
-		panic(err)
-	}
-	_ = consul.New(consulClient, consul.WithHealthCheck(true))
-
 	jwt.InitSecret(bc.Auth.Jwt.Secret, time.Duration(bc.Auth.Jwt.Expire)*time.Second)
 
 	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Registry, logger)

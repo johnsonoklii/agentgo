@@ -7,9 +7,9 @@ import (
 	authV1 "github.com/johnsonoklii/agentgo/apps/baseService/api/auth/v1"
 	userV1 "github.com/johnsonoklii/agentgo/apps/baseService/api/user/v1"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/conf"
-	"github.com/johnsonoklii/agentgo/apps/baseService/internal/middleware"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/service"
 	"github.com/johnsonoklii/agentgo/pkg/errors"
+	"github.com/johnsonoklii/agentgo/pkg/middleware"
 )
 
 // NewHTTPServer new an HTTP server.

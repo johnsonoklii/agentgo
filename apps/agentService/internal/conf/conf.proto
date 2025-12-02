@@ -8,14 +8,14 @@ import "google/protobuf/duration.proto";
 message Bootstrap {
   Server server = 1;
   Data data = 2;
+  Registry registry = 3;
 }
 
 message Server {
   message GRPC {
     string network = 1;
     string addr = 2;
-    string name = 3;
-    google.protobuf.Duration timeout = 4;
+    google.protobuf.Duration timeout = 3;
   }
   message Http {
     string network = 1;
@@ -25,6 +25,7 @@ message Server {
   GRPC grpc = 1;
   Http http = 2;
   string version = 3;
+  string name = 4;
 }
 
 message Data {
@@ -32,17 +33,8 @@ message Data {
     string driver = 1;
     string source = 2;
   }
-  message Redis {
-    string network = 1;
-    string addr = 2;
-    string password = 3;
-    int32 db = 4;
-    google.protobuf.Duration dial_timeout = 5;
-    google.protobuf.Duration read_timeout = 6;
-    google.protobuf.Duration write_timeout = 7;
-  }
   Database database = 1;
-  Redis redis = 2;
+  Redis bizRedis = 2;
 }
 
 message Trace {
@@ -57,24 +49,9 @@ message Registry {
   Consul consul = 1;
 }
 
-message Auth {
-  message Jwt {
-    string secret = 1;      // JWT 密钥
-    int64 expire = 2;       // 过期时间（秒）
-    string issuer = 3;       // 签发者
-  }
-
-  message Redis {
-    string network = 1;
-    string addr = 2;
-    string password = 3;
-    int32 db = 4;
-    google.protobuf.Duration dial_timeout = 5;
-    google.protobuf.Duration read_timeout = 6;
-    google.protobuf.Duration write_timeout = 7;
-  }
-
-  Jwt jwt = 1;
-  Redis redis = 2;
+message Redis {
+  string addr = 1;
+  string password = 2;
+  int32 db = 3;
 }
 

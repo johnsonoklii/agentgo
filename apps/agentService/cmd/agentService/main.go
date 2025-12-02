@@ -1,12 +1,12 @@
 package main
 
 import (
+	"context"
 	"flag"
-	"github.com/johnsonoklii/agentgo/pkg/jwt"
-	"os"
-	"time"
-
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/conf"
+	"github.com/johnsonoklii/agentgo/pkg/utils"
+	"os"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -35,17 +35,53 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+func newApp(logger log.Logger, c *conf.Server, gs *grpc.Server, hs *http.Server, rr registry.Registrar) *kratos.App {
+	ip, err := utils.GetLocalIP()
+	if err != nil {
+		panic(err)
+	}
+
+	grpcIp := ip + c.Grpc.Addr
+	httpIp := ip + c.Http.Addr
+
+	// 创建带有元数据的服务实例用于gRPC
+	grpcInstance := &registry.ServiceInstance{
+		ID:      id + "-modal-grpc",
+		Name:    Name + "-grpc",
+		Version: Version,
+		Metadata: map[string]string{
+			"protocol": "grpc",
+		},
+		Endpoints: []string{"grpc://" + grpcIp},
+	}
+
+	//创建带有元数据的服务实例用于HTTP
+	httpInstance := &registry.ServiceInstance{
+		ID:      id + "-modal-http",
+		Name:    Name + "-http",
+		Version: Version,
+		Metadata: map[string]string{
+			"protocol": "http",
+		},
+		Endpoints: []string{"http://" + httpIp},
+	}
+
+	//注册两个服务实例
+	if err := rr.Register(context.Background(), grpcInstance); err != nil {
+		logger.Log(log.LevelError, "msg", "register grpc service failed", "error", err)
+	}
+
+	if err := rr.Register(context.Background(), httpInstance); err != nil {
+		logger.Log(log.LevelError, "msg", "register http service failed", "error", err)
+	}
+
+	// 创建 Kratos App，同时启动两个 Server
 	return kratos.New(
-		kratos.ID(id),
+		kratos.ID(id+"-"+Name),
 		kratos.Name(Name),
 		kratos.Version(Version),
-		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
-		kratos.Server(
-			gs,
-			hs,
-		),
+		kratos.Server(hs, gs),
 	)
 }
 
@@ -67,7 +103,7 @@ func main() {
 		panic(err)
 	}
 
-	Name = bc.Server.Grpc.Name
+	Name = bc.Server.Name
 	Version = bc.Server.Version
 
 	logger := log.With(log.NewStdLogger(os.Stdout),
@@ -80,26 +116,7 @@ func main() {
 		"span.id", tracing.SpanID(),
 	)
 
-	// consul
-	var rc conf.Registry
-	if err := c.Scan(&rc); err != nil {
-		panic(err)
-	}
-
-	// jwt
-	var auth conf.Auth
-	if err := c.Scan(&auth); err != nil {
-		panic(err)
-	}
-	jwtOption := jwt.Options{
-		SecretKey: []byte(auth.Jwt.Secret),
-		Issuer:    auth.Jwt.Issuer,
-		Expire:    time.Duration(auth.Jwt.Expire) * time.Second,
-
-		RdsAddr: auth.Redis.Addr,
-	}
-
-	app, cleanup, err := wireApp(bc.Server, bc.Data, &rc, &jwtOption, logger)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Registry, logger)
 	if err != nil {
 		panic(err)
 	}

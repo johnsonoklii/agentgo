@@ -22,14 +22,24 @@ const _ = http.SupportPackageIsVersion1
 const OperationAgentCreateAgent = "/api.agent.v1.Agent/CreateAgent"
 const OperationAgentDeleteAgent = "/api.agent.v1.Agent/DeleteAgent"
 const OperationAgentGetAgent = "/api.agent.v1.Agent/GetAgent"
+const OperationAgentGetAgentLatestVersion = "/api.agent.v1.Agent/GetAgentLatestVersion"
 const OperationAgentGetAgentList = "/api.agent.v1.Agent/GetAgentList"
+const OperationAgentGetAgentVersion = "/api.agent.v1.Agent/GetAgentVersion"
+const OperationAgentGetAgentVersions = "/api.agent.v1.Agent/GetAgentVersions"
+const OperationAgentPublishAgent = "/api.agent.v1.Agent/PublishAgent"
+const OperationAgentToggleAgentStatus = "/api.agent.v1.Agent/ToggleAgentStatus"
 const OperationAgentUpdateAgent = "/api.agent.v1.Agent/UpdateAgent"
 
 type AgentHTTPServer interface {
 	CreateAgent(context.Context, *CreateAgentRequest) (*CreateAgentResponse, error)
 	DeleteAgent(context.Context, *DeleteAgentRequest) (*DeleteAgentResponse, error)
 	GetAgent(context.Context, *GetAgentRequest) (*GetAgentResponse, error)
+	GetAgentLatestVersion(context.Context, *GetAgentLatestVersionRequest) (*GetAgentLatestVersionResponse, error)
 	GetAgentList(context.Context, *GetAgentListRequest) (*GetAgentListResponse, error)
+	GetAgentVersion(context.Context, *GetAgentVersionRequest) (*GetAgentVersionResponse, error)
+	GetAgentVersions(context.Context, *GetAgentVersionsRequest) (*GetAgentVersionsResponse, error)
+	PublishAgent(context.Context, *PublishAgentRequest) (*PublishAgentResponse, error)
+	ToggleAgentStatus(context.Context, *ToggleAgentStatusRequest) (*ToggleAgentStatusResponse, error)
 	UpdateAgent(context.Context, *UpdateAgentRequest) (*UpdateAgentResponse, error)
 }
 
@@ -40,6 +50,11 @@ func RegisterAgentHTTPServer(s *http.Server, srv AgentHTTPServer) {
 	r.GET("/v1/agents/{agentId}", _Agent_GetAgent0_HTTP_Handler(srv))
 	r.PUT("/v1/agents/{agentId}", _Agent_UpdateAgent0_HTTP_Handler(srv))
 	r.DELETE("/v1/agents/{agentId}", _Agent_DeleteAgent0_HTTP_Handler(srv))
+	r.POST("/v1/agents/{agentId}/publish", _Agent_PublishAgent0_HTTP_Handler(srv))
+	r.GET("/v1/agents/{agentId}/versions", _Agent_GetAgentVersions0_HTTP_Handler(srv))
+	r.GET("/v1/agents/{agentId}/versions/{versionNumber}", _Agent_GetAgentVersion0_HTTP_Handler(srv))
+	r.GET("/v1/agents/{agentId}/versions/latest", _Agent_GetAgentLatestVersion0_HTTP_Handler(srv))
+	r.POST("/v1/agents/{agentId}/toggle-status", _Agent_ToggleAgentStatus0_HTTP_Handler(srv))
 }
 
 func _Agent_CreateAgent0_HTTP_Handler(srv AgentHTTPServer) func(ctx http.Context) error {
@@ -152,11 +167,132 @@ func _Agent_DeleteAgent0_HTTP_Handler(srv AgentHTTPServer) func(ctx http.Context
 	}
 }
 
+func _Agent_PublishAgent0_HTTP_Handler(srv AgentHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in PublishAgentRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAgentPublishAgent)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.PublishAgent(ctx, req.(*PublishAgentRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*PublishAgentResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Agent_GetAgentVersions0_HTTP_Handler(srv AgentHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetAgentVersionsRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAgentGetAgentVersions)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetAgentVersions(ctx, req.(*GetAgentVersionsRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetAgentVersionsResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Agent_GetAgentVersion0_HTTP_Handler(srv AgentHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetAgentVersionRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAgentGetAgentVersion)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetAgentVersion(ctx, req.(*GetAgentVersionRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetAgentVersionResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Agent_GetAgentLatestVersion0_HTTP_Handler(srv AgentHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetAgentLatestVersionRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAgentGetAgentLatestVersion)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetAgentLatestVersion(ctx, req.(*GetAgentLatestVersionRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetAgentLatestVersionResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Agent_ToggleAgentStatus0_HTTP_Handler(srv AgentHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ToggleAgentStatusRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAgentToggleAgentStatus)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ToggleAgentStatus(ctx, req.(*ToggleAgentStatusRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ToggleAgentStatusResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AgentHTTPClient interface {
 	CreateAgent(ctx context.Context, req *CreateAgentRequest, opts ...http.CallOption) (rsp *CreateAgentResponse, err error)
 	DeleteAgent(ctx context.Context, req *DeleteAgentRequest, opts ...http.CallOption) (rsp *DeleteAgentResponse, err error)
 	GetAgent(ctx context.Context, req *GetAgentRequest, opts ...http.CallOption) (rsp *GetAgentResponse, err error)
+	GetAgentLatestVersion(ctx context.Context, req *GetAgentLatestVersionRequest, opts ...http.CallOption) (rsp *GetAgentLatestVersionResponse, err error)
 	GetAgentList(ctx context.Context, req *GetAgentListRequest, opts ...http.CallOption) (rsp *GetAgentListResponse, err error)
+	GetAgentVersion(ctx context.Context, req *GetAgentVersionRequest, opts ...http.CallOption) (rsp *GetAgentVersionResponse, err error)
+	GetAgentVersions(ctx context.Context, req *GetAgentVersionsRequest, opts ...http.CallOption) (rsp *GetAgentVersionsResponse, err error)
+	PublishAgent(ctx context.Context, req *PublishAgentRequest, opts ...http.CallOption) (rsp *PublishAgentResponse, err error)
+	ToggleAgentStatus(ctx context.Context, req *ToggleAgentStatusRequest, opts ...http.CallOption) (rsp *ToggleAgentStatusResponse, err error)
 	UpdateAgent(ctx context.Context, req *UpdateAgentRequest, opts ...http.CallOption) (rsp *UpdateAgentResponse, err error)
 }
 
@@ -207,6 +343,19 @@ func (c *AgentHTTPClientImpl) GetAgent(ctx context.Context, in *GetAgentRequest,
 	return &out, nil
 }
 
+func (c *AgentHTTPClientImpl) GetAgentLatestVersion(ctx context.Context, in *GetAgentLatestVersionRequest, opts ...http.CallOption) (*GetAgentLatestVersionResponse, error) {
+	var out GetAgentLatestVersionResponse
+	pattern := "/v1/agents/{agentId}/versions/latest"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationAgentGetAgentLatestVersion))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 func (c *AgentHTTPClientImpl) GetAgentList(ctx context.Context, in *GetAgentListRequest, opts ...http.CallOption) (*GetAgentListResponse, error) {
 	var out GetAgentListResponse
 	pattern := "/v1/agents"
@@ -214,6 +363,58 @@ func (c *AgentHTTPClientImpl) GetAgentList(ctx context.Context, in *GetAgentList
 	opts = append(opts, http.Operation(OperationAgentGetAgentList))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *AgentHTTPClientImpl) GetAgentVersion(ctx context.Context, in *GetAgentVersionRequest, opts ...http.CallOption) (*GetAgentVersionResponse, error) {
+	var out GetAgentVersionResponse
+	pattern := "/v1/agents/{agentId}/versions/{versionNumber}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationAgentGetAgentVersion))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *AgentHTTPClientImpl) GetAgentVersions(ctx context.Context, in *GetAgentVersionsRequest, opts ...http.CallOption) (*GetAgentVersionsResponse, error) {
+	var out GetAgentVersionsResponse
+	pattern := "/v1/agents/{agentId}/versions"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationAgentGetAgentVersions))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *AgentHTTPClientImpl) PublishAgent(ctx context.Context, in *PublishAgentRequest, opts ...http.CallOption) (*PublishAgentResponse, error) {
+	var out PublishAgentResponse
+	pattern := "/v1/agents/{agentId}/publish"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAgentPublishAgent))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *AgentHTTPClientImpl) ToggleAgentStatus(ctx context.Context, in *ToggleAgentStatusRequest, opts ...http.CallOption) (*ToggleAgentStatusResponse, error) {
+	var out ToggleAgentStatusResponse
+	pattern := "/v1/agents/{agentId}/toggle-status"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAgentToggleAgentStatus))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

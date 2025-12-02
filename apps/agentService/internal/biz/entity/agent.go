@@ -1,7 +1,9 @@
 package entity
 
+import "time"
+
 type Agent struct {
-	AgentId          int64
+	AgentID          string
 	Name             string
 	Avatar           string
 	Description      string
@@ -10,10 +12,9 @@ type Agent struct {
 	KnowledgeBaseIds []string
 	PublishedVersion string
 	Enabled          bool
-	UserId           int64
-	UserName         string
+	UID              string
 	ToolPresetParams map[string]map[string]map[string]string
 	MultiModel       bool
-	CreatedAt        int64
-	UpdatedAt        int64
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }

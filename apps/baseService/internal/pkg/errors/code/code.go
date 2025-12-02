@@ -9,6 +9,4 @@ var (
 	ErrUserInfo     = errors.New(200003, "", "user info error")
 	ErrUserHeader   = errors.New(200004, "", "user header error")
 	ErrUserNoAuth   = errors.New(200005, "", "user no auth")
-
-	ErrRedirectMain = errors.New(302, "", "/")
 )

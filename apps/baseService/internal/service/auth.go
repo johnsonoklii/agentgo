@@ -6,7 +6,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	pb "github.com/johnsonoklii/agentgo/apps/baseService/api/auth/v1"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/biz/usecase/auth"
-	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/errorx/code"
+	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/errors/code"
 	"github.com/johnsonoklii/agentgo/pkg/jwt"
 )
 

@@ -13,7 +13,7 @@ type RegisterRequest struct {
 }
 
 type UpdateUserRequest struct {
-	UID      int64
+	UID      string
 	UserName string
 	Password string
 	Mobile   string

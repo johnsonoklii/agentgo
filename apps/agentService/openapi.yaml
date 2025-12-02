@@ -3,9 +3,75 @@
 
 openapi: 3.0.3
 info:
-    title: Agent API
+    title: ""
     version: 0.0.1
 paths:
+    /v1/agent/workspaces/agents:
+        get:
+            tags:
+                - AgentWorkspace
+            description: 获取工作区下的Agent列表
+            operationId: AgentWorkspace_GetWorkspaceAgents
+            parameters:
+                - name: workspaceId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent_workspace.v1.GetWorkspaceAgentsResponse'
+    /v1/agent/workspaces/agents/{agentId}:
+        delete:
+            tags:
+                - AgentWorkspace
+            description: 删除工作区中的Agent
+            operationId: AgentWorkspace_RemoveAgentFromWorkspace
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: workspaceId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent_workspace.v1.RemoveAgentFromWorkspaceResponse'
+    /v1/agent/workspaces/{agentId}:
+        post:
+            tags:
+                - AgentWorkspace
+            description: 添加Agent到工作区
+            operationId: AgentWorkspace_AddAgentToWorkspace
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.agent_workspace.v1.AddAgentToWorkspaceRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent_workspace.v1.AddAgentToWorkspaceResponse'
     /v1/agents:
         get:
             tags:
@@ -98,12 +164,121 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.agent.v1.DeleteAgentResponse'
+    /v1/agents/{agentId}/publish:
+        post:
+            tags:
+                - Agent
+            operationId: Agent_PublishAgent
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.agent.v1.PublishAgentRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.PublishAgentResponse'
+    /v1/agents/{agentId}/toggle-status:
+        post:
+            tags:
+                - Agent
+            operationId: Agent_ToggleAgentStatus
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.agent.v1.ToggleAgentStatusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.ToggleAgentStatusResponse'
+    /v1/agents/{agentId}/versions:
+        get:
+            tags:
+                - Agent
+            operationId: Agent_GetAgentVersions
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.GetAgentVersionsResponse'
+    /v1/agents/{agentId}/versions/latest:
+        get:
+            tags:
+                - Agent
+            operationId: Agent_GetAgentLatestVersion
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.GetAgentLatestVersionResponse'
+    /v1/agents/{agentId}/versions/{versionNumber}:
+        get:
+            tags:
+                - Agent
+            operationId: Agent_GetAgentVersion
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: versionNumber
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent.v1.GetAgentVersionResponse'
 components:
     schemas:
         api.agent.v1.AgentInfo:
             type: object
             properties:
-                id:
+                agentVersionID:
+                    type: string
+                agentID:
                     type: string
                 name:
                     type: string
@@ -127,9 +302,7 @@ components:
                     type: string
                 enabled:
                     type: boolean
-                userId:
-                    type: string
-                userName:
+                uid:
                     type: string
                 toolPresetParams:
                     type: object
@@ -141,6 +314,56 @@ components:
                     type: string
                 multiModel:
                     type: boolean
+        api.agent.v1.AgentVersionInfo:
+            type: object
+            properties:
+                agentVersionID:
+                    type: string
+                agentId:
+                    type: string
+                name:
+                    type: string
+                avatar:
+                    type: string
+                description:
+                    type: string
+                versionNumber:
+                    type: string
+                systemPrompt:
+                    type: string
+                welcomeMessage:
+                    type: string
+                toolIds:
+                    type: array
+                    items:
+                        type: string
+                knowledgeBaseIds:
+                    type: array
+                    items:
+                        type: string
+                changeLog:
+                    type: string
+                publishStatus:
+                    type: integer
+                    format: int32
+                rejectReason:
+                    type: string
+                reviewTime:
+                    type: string
+                publishedAt:
+                    type: string
+                userId:
+                    type: string
+                toolPresetParams:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/api.agent.v1.ToolPresetParams'
+                multiModal:
+                    type: boolean
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
         api.agent.v1.CreateAgentRequest:
             type: object
             properties:
@@ -186,6 +409,16 @@ components:
                     format: int32
                 message:
                     type: string
+        api.agent.v1.GetAgentLatestVersionResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.agent.v1.AgentVersionInfo'
         api.agent.v1.GetAgentListResponse:
             type: object
             properties:
@@ -208,6 +441,28 @@ components:
                     type: string
                 data:
                     $ref: '#/components/schemas/api.agent.v1.AgentInfo'
+        api.agent.v1.GetAgentVersionResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.agent.v1.AgentVersionInfo'
+        api.agent.v1.GetAgentVersionsResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.agent.v1.AgentVersionInfo'
         api.agent.v1.ParamValues:
             type: object
             properties:
@@ -215,6 +470,43 @@ components:
                     type: object
                     additionalProperties:
                         type: string
+        api.agent.v1.PublishAgentRequest:
+            type: object
+            properties:
+                agentId:
+                    type: string
+                versionNumber:
+                    type: string
+                changeLog:
+                    type: string
+        api.agent.v1.PublishAgentResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.agent.v1.AgentVersionInfo'
+        api.agent.v1.ToggleAgentStatusRequest:
+            type: object
+            properties:
+                agentId:
+                    type: string
+                enabled:
+                    type: boolean
+            description: 切换Agent启用/禁用状态
+        api.agent.v1.ToggleAgentStatusResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.agent.v1.AgentInfo'
         api.agent.v1.ToolParamCategory:
             type: object
             properties:
@@ -244,5 +536,45 @@ components:
                     type: string
                 data:
                     $ref: '#/components/schemas/api.agent.v1.AgentInfo'
+        api.agent_workspace.v1.AddAgentToWorkspaceRequest:
+            type: object
+            properties:
+                agentId:
+                    type: string
+                workspaceId:
+                    type: string
+            description: 添加Agent到工作区请求
+        api.agent_workspace.v1.AddAgentToWorkspaceResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+            description: 添加Agent到工作区响应
+        api.agent_workspace.v1.GetWorkspaceAgentsResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.agent.v1.AgentInfo'
+            description: 获取工作区Agent列表响应
+        api.agent_workspace.v1.RemoveAgentFromWorkspaceResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+            description: 从工作区删除Agent响应
 tags:
     - name: Agent
+    - name: AgentWorkspace

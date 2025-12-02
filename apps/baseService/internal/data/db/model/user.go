@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type User struct {
 	ID       int64  `gorm:"primarykey"`
 	UID      string `gorm:"uniqueIndex;type:varchar(25);comment:用户ID"`
@@ -10,6 +12,6 @@ type User struct {
 	Deleted  bool   `gorm:"type:tinyint(1) comment '是否删除'"`
 	Status   int8   `gorm:"type:tinyint(1) comment '状态 1:正常 2:禁用 0:未知'"`
 
-	CreatedAt int64 `gorm:"column:created_at"`
-	UpdatedAt int64 `gorm:"column:updated_at"`
+	CreatedAt time.Time `gorm:"column:created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at"`
 }

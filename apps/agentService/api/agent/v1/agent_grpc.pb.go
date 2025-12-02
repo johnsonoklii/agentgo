@@ -19,14 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Agent_CreateAgent_FullMethodName  = "/api.agent.v1.Agent/CreateAgent"
-	Agent_GetAgentList_FullMethodName = "/api.agent.v1.Agent/GetAgentList"
-	Agent_GetAgent_FullMethodName     = "/api.agent.v1.Agent/GetAgent"
-	Agent_UpdateAgent_FullMethodName  = "/api.agent.v1.Agent/UpdateAgent"
-	Agent_DeleteAgent_FullMethodName  = "/api.agent.v1.Agent/DeleteAgent"
+	Agent_CreateAgent_FullMethodName           = "/api.agent.v1.Agent/CreateAgent"
+	Agent_GetAgentList_FullMethodName          = "/api.agent.v1.Agent/GetAgentList"
+	Agent_GetAgent_FullMethodName              = "/api.agent.v1.Agent/GetAgent"
+	Agent_UpdateAgent_FullMethodName           = "/api.agent.v1.Agent/UpdateAgent"
+	Agent_DeleteAgent_FullMethodName           = "/api.agent.v1.Agent/DeleteAgent"
+	Agent_PublishAgent_FullMethodName          = "/api.agent.v1.Agent/PublishAgent"
+	Agent_GetAgentVersions_FullMethodName      = "/api.agent.v1.Agent/GetAgentVersions"
+	Agent_GetAgentVersion_FullMethodName       = "/api.agent.v1.Agent/GetAgentVersion"
+	Agent_GetAgentLatestVersion_FullMethodName = "/api.agent.v1.Agent/GetAgentLatestVersion"
+	Agent_ToggleAgentStatus_FullMethodName     = "/api.agent.v1.Agent/ToggleAgentStatus"
 )
 
-// AgentClient is the client API for Agent gateway.
+// AgentClient is the client API for Agent service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AgentClient interface {
@@ -35,6 +40,11 @@ type AgentClient interface {
 	GetAgent(ctx context.Context, in *GetAgentRequest, opts ...grpc.CallOption) (*GetAgentResponse, error)
 	UpdateAgent(ctx context.Context, in *UpdateAgentRequest, opts ...grpc.CallOption) (*UpdateAgentResponse, error)
 	DeleteAgent(ctx context.Context, in *DeleteAgentRequest, opts ...grpc.CallOption) (*DeleteAgentResponse, error)
+	PublishAgent(ctx context.Context, in *PublishAgentRequest, opts ...grpc.CallOption) (*PublishAgentResponse, error)
+	GetAgentVersions(ctx context.Context, in *GetAgentVersionsRequest, opts ...grpc.CallOption) (*GetAgentVersionsResponse, error)
+	GetAgentVersion(ctx context.Context, in *GetAgentVersionRequest, opts ...grpc.CallOption) (*GetAgentVersionResponse, error)
+	GetAgentLatestVersion(ctx context.Context, in *GetAgentLatestVersionRequest, opts ...grpc.CallOption) (*GetAgentLatestVersionResponse, error)
+	ToggleAgentStatus(ctx context.Context, in *ToggleAgentStatusRequest, opts ...grpc.CallOption) (*ToggleAgentStatusResponse, error)
 }
 
 type agentClient struct {
@@ -95,7 +105,57 @@ func (c *agentClient) DeleteAgent(ctx context.Context, in *DeleteAgentRequest, o
 	return out, nil
 }
 
-// AgentServer is the server API for Agent gateway.
+func (c *agentClient) PublishAgent(ctx context.Context, in *PublishAgentRequest, opts ...grpc.CallOption) (*PublishAgentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PublishAgentResponse)
+	err := c.cc.Invoke(ctx, Agent_PublishAgent_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentClient) GetAgentVersions(ctx context.Context, in *GetAgentVersionsRequest, opts ...grpc.CallOption) (*GetAgentVersionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAgentVersionsResponse)
+	err := c.cc.Invoke(ctx, Agent_GetAgentVersions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentClient) GetAgentVersion(ctx context.Context, in *GetAgentVersionRequest, opts ...grpc.CallOption) (*GetAgentVersionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAgentVersionResponse)
+	err := c.cc.Invoke(ctx, Agent_GetAgentVersion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentClient) GetAgentLatestVersion(ctx context.Context, in *GetAgentLatestVersionRequest, opts ...grpc.CallOption) (*GetAgentLatestVersionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAgentLatestVersionResponse)
+	err := c.cc.Invoke(ctx, Agent_GetAgentLatestVersion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentClient) ToggleAgentStatus(ctx context.Context, in *ToggleAgentStatusRequest, opts ...grpc.CallOption) (*ToggleAgentStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ToggleAgentStatusResponse)
+	err := c.cc.Invoke(ctx, Agent_ToggleAgentStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AgentServer is the server API for Agent service.
 // All implementations must embed UnimplementedAgentServer
 // for forward compatibility.
 type AgentServer interface {
@@ -104,6 +164,11 @@ type AgentServer interface {
 	GetAgent(context.Context, *GetAgentRequest) (*GetAgentResponse, error)
 	UpdateAgent(context.Context, *UpdateAgentRequest) (*UpdateAgentResponse, error)
 	DeleteAgent(context.Context, *DeleteAgentRequest) (*DeleteAgentResponse, error)
+	PublishAgent(context.Context, *PublishAgentRequest) (*PublishAgentResponse, error)
+	GetAgentVersions(context.Context, *GetAgentVersionsRequest) (*GetAgentVersionsResponse, error)
+	GetAgentVersion(context.Context, *GetAgentVersionRequest) (*GetAgentVersionResponse, error)
+	GetAgentLatestVersion(context.Context, *GetAgentLatestVersionRequest) (*GetAgentLatestVersionResponse, error)
+	ToggleAgentStatus(context.Context, *ToggleAgentStatusRequest) (*ToggleAgentStatusResponse, error)
 	mustEmbedUnimplementedAgentServer()
 }
 
@@ -129,10 +194,25 @@ func (UnimplementedAgentServer) UpdateAgent(context.Context, *UpdateAgentRequest
 func (UnimplementedAgentServer) DeleteAgent(context.Context, *DeleteAgentRequest) (*DeleteAgentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAgent not implemented")
 }
+func (UnimplementedAgentServer) PublishAgent(context.Context, *PublishAgentRequest) (*PublishAgentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublishAgent not implemented")
+}
+func (UnimplementedAgentServer) GetAgentVersions(context.Context, *GetAgentVersionsRequest) (*GetAgentVersionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAgentVersions not implemented")
+}
+func (UnimplementedAgentServer) GetAgentVersion(context.Context, *GetAgentVersionRequest) (*GetAgentVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAgentVersion not implemented")
+}
+func (UnimplementedAgentServer) GetAgentLatestVersion(context.Context, *GetAgentLatestVersionRequest) (*GetAgentLatestVersionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAgentLatestVersion not implemented")
+}
+func (UnimplementedAgentServer) ToggleAgentStatus(context.Context, *ToggleAgentStatusRequest) (*ToggleAgentStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ToggleAgentStatus not implemented")
+}
 func (UnimplementedAgentServer) mustEmbedUnimplementedAgentServer() {}
 func (UnimplementedAgentServer) testEmbeddedByValue()               {}
 
-// UnsafeAgentServer may be embedded to opt out of forward compatibility for this gateway.
+// UnsafeAgentServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to AgentServer will
 // result in compilation errors.
 type UnsafeAgentServer interface {
@@ -240,7 +320,97 @@ func _Agent_DeleteAgent_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-// Agent_ServiceDesc is the grpc.ServiceDesc for Agent gateway.
+func _Agent_PublishAgent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublishAgentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServer).PublishAgent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Agent_PublishAgent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServer).PublishAgent(ctx, req.(*PublishAgentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Agent_GetAgentVersions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAgentVersionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServer).GetAgentVersions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Agent_GetAgentVersions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServer).GetAgentVersions(ctx, req.(*GetAgentVersionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Agent_GetAgentVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAgentVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServer).GetAgentVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Agent_GetAgentVersion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServer).GetAgentVersion(ctx, req.(*GetAgentVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Agent_GetAgentLatestVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAgentLatestVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServer).GetAgentLatestVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Agent_GetAgentLatestVersion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServer).GetAgentLatestVersion(ctx, req.(*GetAgentLatestVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Agent_ToggleAgentStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ToggleAgentStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServer).ToggleAgentStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Agent_ToggleAgentStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServer).ToggleAgentStatus(ctx, req.(*ToggleAgentStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Agent_ServiceDesc is the grpc.ServiceDesc for Agent service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Agent_ServiceDesc = grpc.ServiceDesc{
@@ -266,6 +436,26 @@ var Agent_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAgent",
 			Handler:    _Agent_DeleteAgent_Handler,
+		},
+		{
+			MethodName: "PublishAgent",
+			Handler:    _Agent_PublishAgent_Handler,
+		},
+		{
+			MethodName: "GetAgentVersions",
+			Handler:    _Agent_GetAgentVersions_Handler,
+		},
+		{
+			MethodName: "GetAgentVersion",
+			Handler:    _Agent_GetAgentVersion_Handler,
+		},
+		{
+			MethodName: "GetAgentLatestVersion",
+			Handler:    _Agent_GetAgentLatestVersion_Handler,
+		},
+		{
+			MethodName: "ToggleAgentStatus",
+			Handler:    _Agent_ToggleAgentStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

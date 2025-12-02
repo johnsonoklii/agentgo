@@ -1,6 +1,6 @@
 package code
 
-// Gateway 错误码 100000~209999
+// Gateway 错误码 100000~109999
 const (
 	// Token 相关
 	ErrTokenMissing     = 100001

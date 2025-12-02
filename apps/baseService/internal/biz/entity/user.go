@@ -1,5 +1,7 @@
 package entity
 
+import "time"
+
 type User struct {
 	UID string
 
@@ -11,6 +13,6 @@ type User struct {
 
 	Token string
 
-	CreatedAt int64 // creation time
-	UpdatedAt int64 // update time
+	CreatedAt time.Time // creation time
+	UpdatedAt time.Time // update time
 }

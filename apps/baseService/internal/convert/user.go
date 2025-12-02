@@ -23,12 +23,15 @@ func UserPo2Do(model *model.User, token string) *entity.User {
 	}
 }
 
-func UserDo2UserTo(userDo *entity.User) *pb.UserInfo {
+func UserDo2To(userDo *entity.User) *pb.UserInfo {
+	if userDo == nil {
+		return nil
+	}
 	return &pb.UserInfo{
 		UID:       userDo.UID,
 		Mobile:    userDo.Mobile,
 		UserName:  userDo.UserName,
 		Gender:    int32(userDo.Gender),
-		CreatedAt: userDo.CreatedAt,
+		CreatedAt: userDo.CreatedAt.UnixMilli(),
 	}
 }

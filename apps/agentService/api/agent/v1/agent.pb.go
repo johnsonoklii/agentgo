@@ -24,22 +24,22 @@ const (
 
 type AgentInfo struct {
 	state            protoimpl.MessageState       `protogen:"open.v1"`
-	Id               int64                        `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name             string                       `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Description      string                       `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	Avatar           string                       `protobuf:"bytes,4,opt,name=avatar,proto3" json:"avatar,omitempty"`
-	SystemPrompt     string                       `protobuf:"bytes,5,opt,name=systemPrompt,proto3" json:"systemPrompt,omitempty"`
-	WelcomeMessage   string                       `protobuf:"bytes,6,opt,name=welcomeMessage,proto3" json:"welcomeMessage,omitempty"`
-	ToolIds          []string                     `protobuf:"bytes,7,rep,name=toolIds,proto3" json:"toolIds,omitempty"`
-	KnowledgeBaseIds []string                     `protobuf:"bytes,8,rep,name=knowledgeBaseIds,proto3" json:"knowledgeBaseIds,omitempty"`
-	PublishedVersion string                       `protobuf:"bytes,9,opt,name=publishedVersion,proto3" json:"publishedVersion,omitempty"`
-	Enabled          bool                         `protobuf:"varint,10,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	UserId           int64                        `protobuf:"varint,11,opt,name=userId,proto3" json:"userId,omitempty"`
-	UserName         string                       `protobuf:"bytes,12,opt,name=userName,proto3" json:"userName,omitempty"`
-	ToolPresetParams map[string]*ToolPresetParams `protobuf:"bytes,13,rep,name=toolPresetParams,proto3" json:"toolPresetParams,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	CreatedAt        int64                        `protobuf:"varint,14,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
-	UpdatedAt        int64                        `protobuf:"varint,15,opt,name=updatedAt,proto3" json:"updatedAt,omitempty"`
-	MultiModel       bool                         `protobuf:"varint,16,opt,name=multiModel,proto3" json:"multiModel,omitempty"`
+	AgentVersionID   string                       `protobuf:"bytes,1,opt,name=agentVersionID,proto3" json:"agentVersionID,omitempty"`
+	AgentID          string                       `protobuf:"bytes,2,opt,name=agentID,proto3" json:"agentID,omitempty"`
+	Name             string                       `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Description      string                       `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Avatar           string                       `protobuf:"bytes,6,opt,name=avatar,proto3" json:"avatar,omitempty"`
+	SystemPrompt     string                       `protobuf:"bytes,7,opt,name=systemPrompt,proto3" json:"systemPrompt,omitempty"`
+	WelcomeMessage   string                       `protobuf:"bytes,8,opt,name=welcomeMessage,proto3" json:"welcomeMessage,omitempty"`
+	ToolIds          []string                     `protobuf:"bytes,9,rep,name=toolIds,proto3" json:"toolIds,omitempty"`
+	KnowledgeBaseIds []string                     `protobuf:"bytes,10,rep,name=knowledgeBaseIds,proto3" json:"knowledgeBaseIds,omitempty"`
+	PublishedVersion string                       `protobuf:"bytes,11,opt,name=publishedVersion,proto3" json:"publishedVersion,omitempty"`
+	Enabled          bool                         `protobuf:"varint,12,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	Uid              string                       `protobuf:"bytes,13,opt,name=uid,proto3" json:"uid,omitempty"`
+	ToolPresetParams map[string]*ToolPresetParams `protobuf:"bytes,14,rep,name=toolPresetParams,proto3" json:"toolPresetParams,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	CreatedAt        int64                        `protobuf:"varint,15,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
+	UpdatedAt        int64                        `protobuf:"varint,16,opt,name=updatedAt,proto3" json:"updatedAt,omitempty"`
+	MultiModel       bool                         `protobuf:"varint,17,opt,name=multiModel,proto3" json:"multiModel,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -74,11 +74,18 @@ func (*AgentInfo) Descriptor() ([]byte, []int) {
 	return file_agent_v1_agent_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *AgentInfo) GetId() int64 {
+func (x *AgentInfo) GetAgentVersionID() string {
 	if x != nil {
-		return x.Id
+		return x.AgentVersionID
 	}
-	return 0
+	return ""
+}
+
+func (x *AgentInfo) GetAgentID() string {
+	if x != nil {
+		return x.AgentID
+	}
+	return ""
 }
 
 func (x *AgentInfo) GetName() string {
@@ -144,16 +151,9 @@ func (x *AgentInfo) GetEnabled() bool {
 	return false
 }
 
-func (x *AgentInfo) GetUserId() int64 {
+func (x *AgentInfo) GetUid() string {
 	if x != nil {
-		return x.UserId
-	}
-	return 0
-}
-
-func (x *AgentInfo) GetUserName() string {
-	if x != nil {
-		return x.UserName
+		return x.Uid
 	}
 	return ""
 }
@@ -430,7 +430,7 @@ type CreateAgentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Data          *AgentInfo             `protobuf:"bytes,3,opt,name=infrastructure,proto3" json:"infrastructure,omitempty"`
+	Data          *AgentInfo             `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -534,7 +534,7 @@ type GetAgentListResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Data          []*AgentInfo           `protobuf:"bytes,3,rep,name=infrastructure,proto3" json:"infrastructure,omitempty"`
+	Data          []*AgentInfo           `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -638,7 +638,7 @@ type GetAgentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Data          *AgentInfo             `protobuf:"bytes,3,opt,name=infrastructure,proto3" json:"infrastructure,omitempty"`
+	Data          *AgentInfo             `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -742,7 +742,7 @@ type UpdateAgentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Data          *AgentInfo             `protobuf:"bytes,3,opt,name=infrastructure,proto3" json:"infrastructure,omitempty"`
+	Data          *AgentInfo             `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -894,30 +894,782 @@ func (x *DeleteAgentResponse) GetMessage() string {
 	return ""
 }
 
+type PublishAgentRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agentId,proto3" json:"agentId,omitempty"`
+	VersionNumber string                 `protobuf:"bytes,2,opt,name=versionNumber,proto3" json:"versionNumber,omitempty"` // 版本号，如 1.0.0
+	ChangeLog     string                 `protobuf:"bytes,3,opt,name=changeLog,proto3" json:"changeLog,omitempty"`         // 版本更新日志
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PublishAgentRequest) Reset() {
+	*x = PublishAgentRequest{}
+	mi := &file_agent_v1_agent_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PublishAgentRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublishAgentRequest) ProtoMessage() {}
+
+func (x *PublishAgentRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PublishAgentRequest.ProtoReflect.Descriptor instead.
+func (*PublishAgentRequest) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *PublishAgentRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *PublishAgentRequest) GetVersionNumber() string {
+	if x != nil {
+		return x.VersionNumber
+	}
+	return ""
+}
+
+func (x *PublishAgentRequest) GetChangeLog() string {
+	if x != nil {
+		return x.ChangeLog
+	}
+	return ""
+}
+
+type PublishAgentResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Data          *AgentVersionInfo      `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PublishAgentResponse) Reset() {
+	*x = PublishAgentResponse{}
+	mi := &file_agent_v1_agent_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PublishAgentResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PublishAgentResponse) ProtoMessage() {}
+
+func (x *PublishAgentResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PublishAgentResponse.ProtoReflect.Descriptor instead.
+func (*PublishAgentResponse) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *PublishAgentResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *PublishAgentResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *PublishAgentResponse) GetData() *AgentVersionInfo {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+type AgentVersionInfo struct {
+	state            protoimpl.MessageState       `protogen:"open.v1"`
+	AgentVersionID   string                       `protobuf:"bytes,1,opt,name=agentVersionID,proto3" json:"agentVersionID,omitempty"`                                                                                // 版本唯一ID
+	AgentId          string                       `protobuf:"bytes,2,opt,name=agentId,proto3" json:"agentId,omitempty"`                                                                                              // 关联的Agent ID
+	Name             string                       `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`                                                                                                    // Agent名称
+	Avatar           string                       `protobuf:"bytes,4,opt,name=avatar,proto3" json:"avatar,omitempty"`                                                                                                // Agent头像URL
+	Description      string                       `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`                                                                                      // Agent描述
+	VersionNumber    string                       `protobuf:"bytes,6,opt,name=versionNumber,proto3" json:"versionNumber,omitempty"`                                                                                  // 版本号
+	SystemPrompt     string                       `protobuf:"bytes,7,opt,name=systemPrompt,proto3" json:"systemPrompt,omitempty"`                                                                                    // 系统提示词
+	WelcomeMessage   string                       `protobuf:"bytes,8,opt,name=welcomeMessage,proto3" json:"welcomeMessage,omitempty"`                                                                                // 欢迎消息
+	ToolIds          []string                     `protobuf:"bytes,9,rep,name=toolIds,proto3" json:"toolIds,omitempty"`                                                                                              // 工具ID列表
+	KnowledgeBaseIds []string                     `protobuf:"bytes,10,rep,name=knowledgeBaseIds,proto3" json:"knowledgeBaseIds,omitempty"`                                                                           // 知识库ID列表
+	ChangeLog        string                       `protobuf:"bytes,11,opt,name=changeLog,proto3" json:"changeLog,omitempty"`                                                                                         // 版本更新日志
+	PublishStatus    int32                        `protobuf:"varint,12,opt,name=publishStatus,proto3" json:"publishStatus,omitempty"`                                                                                // 发布状态：1-审核中, 2-已发布, 3-拒绝, 4-已下架
+	RejectReason     string                       `protobuf:"bytes,13,opt,name=rejectReason,proto3" json:"rejectReason,omitempty"`                                                                                   // 审核拒绝原因
+	ReviewTime       int64                        `protobuf:"varint,14,opt,name=reviewTime,proto3" json:"reviewTime,omitempty"`                                                                                      // 审核时间
+	PublishedAt      int64                        `protobuf:"varint,15,opt,name=publishedAt,proto3" json:"publishedAt,omitempty"`                                                                                    // 发布时间
+	UserId           string                       `protobuf:"bytes,16,opt,name=userId,proto3" json:"userId,omitempty"`                                                                                               // 创建者用户ID
+	ToolPresetParams map[string]*ToolPresetParams `protobuf:"bytes,17,rep,name=toolPresetParams,proto3" json:"toolPresetParams,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // 工具预设参数
+	MultiModal       bool                         `protobuf:"varint,18,opt,name=multiModal,proto3" json:"multiModal,omitempty"`                                                                                      // 是否支持多模态
+	CreatedAt        int64                        `protobuf:"varint,19,opt,name=createdAt,proto3" json:"createdAt,omitempty"`                                                                                        // 创建时间
+	UpdatedAt        int64                        `protobuf:"varint,20,opt,name=updatedAt,proto3" json:"updatedAt,omitempty"`                                                                                        // 更新时间
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *AgentVersionInfo) Reset() {
+	*x = AgentVersionInfo{}
+	mi := &file_agent_v1_agent_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AgentVersionInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AgentVersionInfo) ProtoMessage() {}
+
+func (x *AgentVersionInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AgentVersionInfo.ProtoReflect.Descriptor instead.
+func (*AgentVersionInfo) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *AgentVersionInfo) GetAgentVersionID() string {
+	if x != nil {
+		return x.AgentVersionID
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetAvatar() string {
+	if x != nil {
+		return x.Avatar
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetVersionNumber() string {
+	if x != nil {
+		return x.VersionNumber
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetSystemPrompt() string {
+	if x != nil {
+		return x.SystemPrompt
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetWelcomeMessage() string {
+	if x != nil {
+		return x.WelcomeMessage
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetToolIds() []string {
+	if x != nil {
+		return x.ToolIds
+	}
+	return nil
+}
+
+func (x *AgentVersionInfo) GetKnowledgeBaseIds() []string {
+	if x != nil {
+		return x.KnowledgeBaseIds
+	}
+	return nil
+}
+
+func (x *AgentVersionInfo) GetChangeLog() string {
+	if x != nil {
+		return x.ChangeLog
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetPublishStatus() int32 {
+	if x != nil {
+		return x.PublishStatus
+	}
+	return 0
+}
+
+func (x *AgentVersionInfo) GetRejectReason() string {
+	if x != nil {
+		return x.RejectReason
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetReviewTime() int64 {
+	if x != nil {
+		return x.ReviewTime
+	}
+	return 0
+}
+
+func (x *AgentVersionInfo) GetPublishedAt() int64 {
+	if x != nil {
+		return x.PublishedAt
+	}
+	return 0
+}
+
+func (x *AgentVersionInfo) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *AgentVersionInfo) GetToolPresetParams() map[string]*ToolPresetParams {
+	if x != nil {
+		return x.ToolPresetParams
+	}
+	return nil
+}
+
+func (x *AgentVersionInfo) GetMultiModal() bool {
+	if x != nil {
+		return x.MultiModal
+	}
+	return false
+}
+
+func (x *AgentVersionInfo) GetCreatedAt() int64 {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return 0
+}
+
+func (x *AgentVersionInfo) GetUpdatedAt() int64 {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return 0
+}
+
+// 获取Agent所有版本
+type GetAgentVersionsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agentId,proto3" json:"agentId,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAgentVersionsRequest) Reset() {
+	*x = GetAgentVersionsRequest{}
+	mi := &file_agent_v1_agent_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAgentVersionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAgentVersionsRequest) ProtoMessage() {}
+
+func (x *GetAgentVersionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAgentVersionsRequest.ProtoReflect.Descriptor instead.
+func (*GetAgentVersionsRequest) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetAgentVersionsRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+type GetAgentVersionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Data          []*AgentVersionInfo    `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAgentVersionsResponse) Reset() {
+	*x = GetAgentVersionsResponse{}
+	mi := &file_agent_v1_agent_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAgentVersionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAgentVersionsResponse) ProtoMessage() {}
+
+func (x *GetAgentVersionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAgentVersionsResponse.ProtoReflect.Descriptor instead.
+func (*GetAgentVersionsResponse) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *GetAgentVersionsResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *GetAgentVersionsResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *GetAgentVersionsResponse) GetData() []*AgentVersionInfo {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 获取Agent特定版本
+type GetAgentVersionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agentId,proto3" json:"agentId,omitempty"`
+	VersionNumber string                 `protobuf:"bytes,2,opt,name=versionNumber,proto3" json:"versionNumber,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAgentVersionRequest) Reset() {
+	*x = GetAgentVersionRequest{}
+	mi := &file_agent_v1_agent_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAgentVersionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAgentVersionRequest) ProtoMessage() {}
+
+func (x *GetAgentVersionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAgentVersionRequest.ProtoReflect.Descriptor instead.
+func (*GetAgentVersionRequest) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GetAgentVersionRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *GetAgentVersionRequest) GetVersionNumber() string {
+	if x != nil {
+		return x.VersionNumber
+	}
+	return ""
+}
+
+type GetAgentVersionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Data          *AgentVersionInfo      `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAgentVersionResponse) Reset() {
+	*x = GetAgentVersionResponse{}
+	mi := &file_agent_v1_agent_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAgentVersionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAgentVersionResponse) ProtoMessage() {}
+
+func (x *GetAgentVersionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAgentVersionResponse.ProtoReflect.Descriptor instead.
+func (*GetAgentVersionResponse) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GetAgentVersionResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *GetAgentVersionResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *GetAgentVersionResponse) GetData() *AgentVersionInfo {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 获取Agent最新版本
+type GetAgentLatestVersionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agentId,proto3" json:"agentId,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAgentLatestVersionRequest) Reset() {
+	*x = GetAgentLatestVersionRequest{}
+	mi := &file_agent_v1_agent_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAgentLatestVersionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAgentLatestVersionRequest) ProtoMessage() {}
+
+func (x *GetAgentLatestVersionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAgentLatestVersionRequest.ProtoReflect.Descriptor instead.
+func (*GetAgentLatestVersionRequest) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *GetAgentLatestVersionRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+type GetAgentLatestVersionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Data          *AgentVersionInfo      `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAgentLatestVersionResponse) Reset() {
+	*x = GetAgentLatestVersionResponse{}
+	mi := &file_agent_v1_agent_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAgentLatestVersionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAgentLatestVersionResponse) ProtoMessage() {}
+
+func (x *GetAgentLatestVersionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAgentLatestVersionResponse.ProtoReflect.Descriptor instead.
+func (*GetAgentLatestVersionResponse) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GetAgentLatestVersionResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *GetAgentLatestVersionResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *GetAgentLatestVersionResponse) GetData() *AgentVersionInfo {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+// 切换Agent启用/禁用状态
+type ToggleAgentStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agentId,proto3" json:"agentId,omitempty"`
+	Enabled       bool                   `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled,omitempty"` // true-启用, false-禁用
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ToggleAgentStatusRequest) Reset() {
+	*x = ToggleAgentStatusRequest{}
+	mi := &file_agent_v1_agent_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ToggleAgentStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ToggleAgentStatusRequest) ProtoMessage() {}
+
+func (x *ToggleAgentStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ToggleAgentStatusRequest.ProtoReflect.Descriptor instead.
+func (*ToggleAgentStatusRequest) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *ToggleAgentStatusRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *ToggleAgentStatusRequest) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+type ToggleAgentStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Data          *AgentInfo             `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ToggleAgentStatusResponse) Reset() {
+	*x = ToggleAgentStatusResponse{}
+	mi := &file_agent_v1_agent_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ToggleAgentStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ToggleAgentStatusResponse) ProtoMessage() {}
+
+func (x *ToggleAgentStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_v1_agent_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ToggleAgentStatusResponse.ProtoReflect.Descriptor instead.
+func (*ToggleAgentStatusResponse) Descriptor() ([]byte, []int) {
+	return file_agent_v1_agent_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *ToggleAgentStatusResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *ToggleAgentStatusResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *ToggleAgentStatusResponse) GetData() *AgentInfo {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 var File_agent_v1_agent_proto protoreflect.FileDescriptor
 
 const file_agent_v1_agent_proto_rawDesc = "" +
 	"\n" +
-	"\x14agent/v1/agent.proto\x12\fapi.agent.v1\x1a\x1cgoogle/api/annotations.proto\"\x91\x05\n" +
-	"\tAgentInfo\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x16\n" +
-	"\x06avatar\x18\x04 \x01(\tR\x06avatar\x12\"\n" +
-	"\fsystemPrompt\x18\x05 \x01(\tR\fsystemPrompt\x12&\n" +
-	"\x0ewelcomeMessage\x18\x06 \x01(\tR\x0ewelcomeMessage\x12\x18\n" +
-	"\atoolIds\x18\a \x03(\tR\atoolIds\x12*\n" +
-	"\x10knowledgeBaseIds\x18\b \x03(\tR\x10knowledgeBaseIds\x12*\n" +
-	"\x10publishedVersion\x18\t \x01(\tR\x10publishedVersion\x12\x18\n" +
-	"\aenabled\x18\n" +
-	" \x01(\bR\aenabled\x12\x16\n" +
-	"\x06userId\x18\v \x01(\x03R\x06userId\x12\x1a\n" +
-	"\buserName\x18\f \x01(\tR\buserName\x12Y\n" +
-	"\x10toolPresetParams\x18\r \x03(\v2-.api.agent.v1.AgentInfo.ToolPresetParamsEntryR\x10toolPresetParams\x12\x1c\n" +
-	"\tcreatedAt\x18\x0e \x01(\x03R\tcreatedAt\x12\x1c\n" +
-	"\tupdatedAt\x18\x0f \x01(\x03R\tupdatedAt\x12\x1e\n" +
+	"\x14agent/v1/agent.proto\x12\fapi.agent.v1\x1a\x1cgoogle/api/annotations.proto\"\xa1\x05\n" +
+	"\tAgentInfo\x12&\n" +
+	"\x0eagentVersionID\x18\x01 \x01(\tR\x0eagentVersionID\x12\x18\n" +
+	"\aagentID\x18\x02 \x01(\tR\aagentID\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x16\n" +
+	"\x06avatar\x18\x06 \x01(\tR\x06avatar\x12\"\n" +
+	"\fsystemPrompt\x18\a \x01(\tR\fsystemPrompt\x12&\n" +
+	"\x0ewelcomeMessage\x18\b \x01(\tR\x0ewelcomeMessage\x12\x18\n" +
+	"\atoolIds\x18\t \x03(\tR\atoolIds\x12*\n" +
+	"\x10knowledgeBaseIds\x18\n" +
+	" \x03(\tR\x10knowledgeBaseIds\x12*\n" +
+	"\x10publishedVersion\x18\v \x01(\tR\x10publishedVersion\x12\x18\n" +
+	"\aenabled\x18\f \x01(\bR\aenabled\x12\x10\n" +
+	"\x03uid\x18\r \x01(\tR\x03uid\x12Y\n" +
+	"\x10toolPresetParams\x18\x0e \x03(\v2-.api.agent.v1.AgentInfo.ToolPresetParamsEntryR\x10toolPresetParams\x12\x1c\n" +
+	"\tcreatedAt\x18\x0f \x01(\x03R\tcreatedAt\x12\x1c\n" +
+	"\tupdatedAt\x18\x10 \x01(\x03R\tupdatedAt\x12\x1e\n" +
 	"\n" +
-	"multiModel\x18\x10 \x01(\bR\n" +
+	"multiModel\x18\x11 \x01(\bR\n" +
 	"multiModel\x1ac\n" +
 	"\x15ToolPresetParamsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x124\n" +
@@ -981,7 +1733,71 @@ const file_agent_v1_agent_proto_rawDesc = "" +
 	"\aagentId\x18\x01 \x01(\x03R\aagentId\"C\n" +
 	"\x13DeleteAgentResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xad\x04\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"s\n" +
+	"\x13PublishAgentRequest\x12\x18\n" +
+	"\aagentId\x18\x01 \x01(\tR\aagentId\x12$\n" +
+	"\rversionNumber\x18\x02 \x01(\tR\rversionNumber\x12\x1c\n" +
+	"\tchangeLog\x18\x03 \x01(\tR\tchangeLog\"x\n" +
+	"\x14PublishAgentResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x122\n" +
+	"\x04data\x18\x03 \x01(\v2\x1e.api.agent.v1.AgentVersionInfoR\x04data\"\xbf\x06\n" +
+	"\x10AgentVersionInfo\x12&\n" +
+	"\x0eagentVersionID\x18\x01 \x01(\tR\x0eagentVersionID\x12\x18\n" +
+	"\aagentId\x18\x02 \x01(\tR\aagentId\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x16\n" +
+	"\x06avatar\x18\x04 \x01(\tR\x06avatar\x12 \n" +
+	"\vdescription\x18\x05 \x01(\tR\vdescription\x12$\n" +
+	"\rversionNumber\x18\x06 \x01(\tR\rversionNumber\x12\"\n" +
+	"\fsystemPrompt\x18\a \x01(\tR\fsystemPrompt\x12&\n" +
+	"\x0ewelcomeMessage\x18\b \x01(\tR\x0ewelcomeMessage\x12\x18\n" +
+	"\atoolIds\x18\t \x03(\tR\atoolIds\x12*\n" +
+	"\x10knowledgeBaseIds\x18\n" +
+	" \x03(\tR\x10knowledgeBaseIds\x12\x1c\n" +
+	"\tchangeLog\x18\v \x01(\tR\tchangeLog\x12$\n" +
+	"\rpublishStatus\x18\f \x01(\x05R\rpublishStatus\x12\"\n" +
+	"\frejectReason\x18\r \x01(\tR\frejectReason\x12\x1e\n" +
+	"\n" +
+	"reviewTime\x18\x0e \x01(\x03R\n" +
+	"reviewTime\x12 \n" +
+	"\vpublishedAt\x18\x0f \x01(\x03R\vpublishedAt\x12\x16\n" +
+	"\x06userId\x18\x10 \x01(\tR\x06userId\x12`\n" +
+	"\x10toolPresetParams\x18\x11 \x03(\v24.api.agent.v1.AgentVersionInfo.ToolPresetParamsEntryR\x10toolPresetParams\x12\x1e\n" +
+	"\n" +
+	"multiModal\x18\x12 \x01(\bR\n" +
+	"multiModal\x12\x1c\n" +
+	"\tcreatedAt\x18\x13 \x01(\x03R\tcreatedAt\x12\x1c\n" +
+	"\tupdatedAt\x18\x14 \x01(\x03R\tupdatedAt\x1ac\n" +
+	"\x15ToolPresetParamsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x124\n" +
+	"\x05value\x18\x02 \x01(\v2\x1e.api.agent.v1.ToolPresetParamsR\x05value:\x028\x01\"3\n" +
+	"\x17GetAgentVersionsRequest\x12\x18\n" +
+	"\aagentId\x18\x01 \x01(\tR\aagentId\"|\n" +
+	"\x18GetAgentVersionsResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x122\n" +
+	"\x04data\x18\x03 \x03(\v2\x1e.api.agent.v1.AgentVersionInfoR\x04data\"X\n" +
+	"\x16GetAgentVersionRequest\x12\x18\n" +
+	"\aagentId\x18\x01 \x01(\tR\aagentId\x12$\n" +
+	"\rversionNumber\x18\x02 \x01(\tR\rversionNumber\"{\n" +
+	"\x17GetAgentVersionResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x122\n" +
+	"\x04data\x18\x03 \x01(\v2\x1e.api.agent.v1.AgentVersionInfoR\x04data\"8\n" +
+	"\x1cGetAgentLatestVersionRequest\x12\x18\n" +
+	"\aagentId\x18\x01 \x01(\tR\aagentId\"\x81\x01\n" +
+	"\x1dGetAgentLatestVersionResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x122\n" +
+	"\x04data\x18\x03 \x01(\v2\x1e.api.agent.v1.AgentVersionInfoR\x04data\"N\n" +
+	"\x18ToggleAgentStatusRequest\x12\x18\n" +
+	"\aagentId\x18\x01 \x01(\tR\aagentId\x12\x18\n" +
+	"\aenabled\x18\x02 \x01(\bR\aenabled\"v\n" +
+	"\x19ToggleAgentStatusResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12+\n" +
+	"\x04data\x18\x03 \x01(\v2\x17.api.agent.v1.AgentInfoR\x04data2\x87\n" +
+	"\n" +
 	"\x05Agent\x12i\n" +
 	"\vCreateAgent\x12 .api.agent.v1.CreateAgentRequest\x1a!.api.agent.v1.CreateAgentResponse\"\x15\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
 	"/v1/agents\x12i\n" +
@@ -989,7 +1805,12 @@ const file_agent_v1_agent_proto_rawDesc = "" +
 	"/v1/agents\x12g\n" +
 	"\bGetAgent\x12\x1d.api.agent.v1.GetAgentRequest\x1a\x1e.api.agent.v1.GetAgentResponse\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/v1/agents/{agentId}\x12s\n" +
 	"\vUpdateAgent\x12 .api.agent.v1.UpdateAgentRequest\x1a!.api.agent.v1.UpdateAgentResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\x1a\x14/v1/agents/{agentId}\x12p\n" +
-	"\vDeleteAgent\x12 .api.agent.v1.DeleteAgentRequest\x1a!.api.agent.v1.DeleteAgentResponse\"\x1c\x82\xd3\xe4\x93\x02\x16*\x14/v1/agents/{agentId}B\x1eZ\x1cagentService/api/agent/v1;v1b\x06proto3"
+	"\vDeleteAgent\x12 .api.agent.v1.DeleteAgentRequest\x1a!.api.agent.v1.DeleteAgentResponse\"\x1c\x82\xd3\xe4\x93\x02\x16*\x14/v1/agents/{agentId}\x12~\n" +
+	"\fPublishAgent\x12!.api.agent.v1.PublishAgentRequest\x1a\".api.agent.v1.PublishAgentResponse\"'\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/v1/agents/{agentId}/publish\x12\x88\x01\n" +
+	"\x10GetAgentVersions\x12%.api.agent.v1.GetAgentVersionsRequest\x1a&.api.agent.v1.GetAgentVersionsResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/v1/agents/{agentId}/versions\x12\x95\x01\n" +
+	"\x0fGetAgentVersion\x12$.api.agent.v1.GetAgentVersionRequest\x1a%.api.agent.v1.GetAgentVersionResponse\"5\x82\xd3\xe4\x93\x02/\x12-/v1/agents/{agentId}/versions/{versionNumber}\x12\x9e\x01\n" +
+	"\x15GetAgentLatestVersion\x12*.api.agent.v1.GetAgentLatestVersionRequest\x1a+.api.agent.v1.GetAgentLatestVersionResponse\",\x82\xd3\xe4\x93\x02&\x12$/v1/agents/{agentId}/versions/latest\x12\x93\x01\n" +
+	"\x11ToggleAgentStatus\x12&.api.agent.v1.ToggleAgentStatusRequest\x1a'.api.agent.v1.ToggleAgentStatusResponse\"-\x82\xd3\xe4\x93\x02':\x01*\"\"/v1/agents/{agentId}/toggle-statusBCZAgithub.com/johnsonoklii/agentgo/apps/agentService/api/agent/v1;v1b\x06proto3"
 
 var (
 	file_agent_v1_agent_proto_rawDescOnce sync.Once
@@ -1003,57 +1824,86 @@ func file_agent_v1_agent_proto_rawDescGZIP() []byte {
 	return file_agent_v1_agent_proto_rawDescData
 }
 
-var file_agent_v1_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_agent_v1_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
 var file_agent_v1_agent_proto_goTypes = []any{
-	(*AgentInfo)(nil),            // 0: api.agent.v1.AgentInfo
-	(*CreateAgentRequest)(nil),   // 1: api.agent.v1.CreateAgentRequest
-	(*ToolPresetParams)(nil),     // 2: api.agent.v1.ToolPresetParams
-	(*ToolParamCategory)(nil),    // 3: api.agent.v1.ToolParamCategory
-	(*ParamValues)(nil),          // 4: api.agent.v1.ParamValues
-	(*CreateAgentResponse)(nil),  // 5: api.agent.v1.CreateAgentResponse
-	(*GetAgentListRequest)(nil),  // 6: api.agent.v1.GetAgentListRequest
-	(*GetAgentListResponse)(nil), // 7: api.agent.v1.GetAgentListResponse
-	(*GetAgentRequest)(nil),      // 8: api.agent.v1.GetAgentRequest
-	(*GetAgentResponse)(nil),     // 9: api.agent.v1.GetAgentResponse
-	(*UpdateAgentRequest)(nil),   // 10: api.agent.v1.UpdateAgentRequest
-	(*UpdateAgentResponse)(nil),  // 11: api.agent.v1.UpdateAgentResponse
-	(*DeleteAgentRequest)(nil),   // 12: api.agent.v1.DeleteAgentRequest
-	(*DeleteAgentResponse)(nil),  // 13: api.agent.v1.DeleteAgentResponse
-	nil,                          // 14: api.agent.v1.AgentInfo.ToolPresetParamsEntry
-	nil,                          // 15: api.agent.v1.CreateAgentRequest.ToolPresetParamsEntry
-	nil,                          // 16: api.agent.v1.ToolPresetParams.ToolsEntry
-	nil,                          // 17: api.agent.v1.ToolParamCategory.CategoriesEntry
-	nil,                          // 18: api.agent.v1.ParamValues.ValuesEntry
+	(*AgentInfo)(nil),                     // 0: api.agent.v1.AgentInfo
+	(*CreateAgentRequest)(nil),            // 1: api.agent.v1.CreateAgentRequest
+	(*ToolPresetParams)(nil),              // 2: api.agent.v1.ToolPresetParams
+	(*ToolParamCategory)(nil),             // 3: api.agent.v1.ToolParamCategory
+	(*ParamValues)(nil),                   // 4: api.agent.v1.ParamValues
+	(*CreateAgentResponse)(nil),           // 5: api.agent.v1.CreateAgentResponse
+	(*GetAgentListRequest)(nil),           // 6: api.agent.v1.GetAgentListRequest
+	(*GetAgentListResponse)(nil),          // 7: api.agent.v1.GetAgentListResponse
+	(*GetAgentRequest)(nil),               // 8: api.agent.v1.GetAgentRequest
+	(*GetAgentResponse)(nil),              // 9: api.agent.v1.GetAgentResponse
+	(*UpdateAgentRequest)(nil),            // 10: api.agent.v1.UpdateAgentRequest
+	(*UpdateAgentResponse)(nil),           // 11: api.agent.v1.UpdateAgentResponse
+	(*DeleteAgentRequest)(nil),            // 12: api.agent.v1.DeleteAgentRequest
+	(*DeleteAgentResponse)(nil),           // 13: api.agent.v1.DeleteAgentResponse
+	(*PublishAgentRequest)(nil),           // 14: api.agent.v1.PublishAgentRequest
+	(*PublishAgentResponse)(nil),          // 15: api.agent.v1.PublishAgentResponse
+	(*AgentVersionInfo)(nil),              // 16: api.agent.v1.AgentVersionInfo
+	(*GetAgentVersionsRequest)(nil),       // 17: api.agent.v1.GetAgentVersionsRequest
+	(*GetAgentVersionsResponse)(nil),      // 18: api.agent.v1.GetAgentVersionsResponse
+	(*GetAgentVersionRequest)(nil),        // 19: api.agent.v1.GetAgentVersionRequest
+	(*GetAgentVersionResponse)(nil),       // 20: api.agent.v1.GetAgentVersionResponse
+	(*GetAgentLatestVersionRequest)(nil),  // 21: api.agent.v1.GetAgentLatestVersionRequest
+	(*GetAgentLatestVersionResponse)(nil), // 22: api.agent.v1.GetAgentLatestVersionResponse
+	(*ToggleAgentStatusRequest)(nil),      // 23: api.agent.v1.ToggleAgentStatusRequest
+	(*ToggleAgentStatusResponse)(nil),     // 24: api.agent.v1.ToggleAgentStatusResponse
+	nil,                                   // 25: api.agent.v1.AgentInfo.ToolPresetParamsEntry
+	nil,                                   // 26: api.agent.v1.CreateAgentRequest.ToolPresetParamsEntry
+	nil,                                   // 27: api.agent.v1.ToolPresetParams.ToolsEntry
+	nil,                                   // 28: api.agent.v1.ToolParamCategory.CategoriesEntry
+	nil,                                   // 29: api.agent.v1.ParamValues.ValuesEntry
+	nil,                                   // 30: api.agent.v1.AgentVersionInfo.ToolPresetParamsEntry
 }
 var file_agent_v1_agent_proto_depIdxs = []int32{
-	14, // 0: api.agent.v1.AgentInfo.toolPresetParams:type_name -> api.agent.v1.AgentInfo.ToolPresetParamsEntry
-	15, // 1: api.agent.v1.CreateAgentRequest.toolPresetParams:type_name -> api.agent.v1.CreateAgentRequest.ToolPresetParamsEntry
-	16, // 2: api.agent.v1.ToolPresetParams.tools:type_name -> api.agent.v1.ToolPresetParams.ToolsEntry
-	17, // 3: api.agent.v1.ToolParamCategory.categories:type_name -> api.agent.v1.ToolParamCategory.CategoriesEntry
-	18, // 4: api.agent.v1.ParamValues.values:type_name -> api.agent.v1.ParamValues.ValuesEntry
-	0,  // 5: api.agent.v1.CreateAgentResponse.infrastructure:type_name -> api.agent.v1.AgentInfo
-	0,  // 6: api.agent.v1.GetAgentListResponse.infrastructure:type_name -> api.agent.v1.AgentInfo
-	0,  // 7: api.agent.v1.GetAgentResponse.infrastructure:type_name -> api.agent.v1.AgentInfo
-	0,  // 8: api.agent.v1.UpdateAgentResponse.infrastructure:type_name -> api.agent.v1.AgentInfo
-	2,  // 9: api.agent.v1.AgentInfo.ToolPresetParamsEntry.value:type_name -> api.agent.v1.ToolPresetParams
-	2,  // 10: api.agent.v1.CreateAgentRequest.ToolPresetParamsEntry.value:type_name -> api.agent.v1.ToolPresetParams
-	3,  // 11: api.agent.v1.ToolPresetParams.ToolsEntry.value:type_name -> api.agent.v1.ToolParamCategory
-	4,  // 12: api.agent.v1.ToolParamCategory.CategoriesEntry.value:type_name -> api.agent.v1.ParamValues
-	1,  // 13: api.agent.v1.Agent.CreateAgent:input_type -> api.agent.v1.CreateAgentRequest
-	6,  // 14: api.agent.v1.Agent.GetAgentList:input_type -> api.agent.v1.GetAgentListRequest
-	8,  // 15: api.agent.v1.Agent.GetAgent:input_type -> api.agent.v1.GetAgentRequest
-	10, // 16: api.agent.v1.Agent.UpdateAgent:input_type -> api.agent.v1.UpdateAgentRequest
-	12, // 17: api.agent.v1.Agent.DeleteAgent:input_type -> api.agent.v1.DeleteAgentRequest
-	5,  // 18: api.agent.v1.Agent.CreateAgent:output_type -> api.agent.v1.CreateAgentResponse
-	7,  // 19: api.agent.v1.Agent.GetAgentList:output_type -> api.agent.v1.GetAgentListResponse
-	9,  // 20: api.agent.v1.Agent.GetAgent:output_type -> api.agent.v1.GetAgentResponse
-	11, // 21: api.agent.v1.Agent.UpdateAgent:output_type -> api.agent.v1.UpdateAgentResponse
-	13, // 22: api.agent.v1.Agent.DeleteAgent:output_type -> api.agent.v1.DeleteAgentResponse
-	18, // [18:23] is the sub-list for method output_type
-	13, // [13:18] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	25, // 0: api.agent.v1.AgentInfo.toolPresetParams:type_name -> api.agent.v1.AgentInfo.ToolPresetParamsEntry
+	26, // 1: api.agent.v1.CreateAgentRequest.toolPresetParams:type_name -> api.agent.v1.CreateAgentRequest.ToolPresetParamsEntry
+	27, // 2: api.agent.v1.ToolPresetParams.tools:type_name -> api.agent.v1.ToolPresetParams.ToolsEntry
+	28, // 3: api.agent.v1.ToolParamCategory.categories:type_name -> api.agent.v1.ToolParamCategory.CategoriesEntry
+	29, // 4: api.agent.v1.ParamValues.values:type_name -> api.agent.v1.ParamValues.ValuesEntry
+	0,  // 5: api.agent.v1.CreateAgentResponse.data:type_name -> api.agent.v1.AgentInfo
+	0,  // 6: api.agent.v1.GetAgentListResponse.data:type_name -> api.agent.v1.AgentInfo
+	0,  // 7: api.agent.v1.GetAgentResponse.data:type_name -> api.agent.v1.AgentInfo
+	0,  // 8: api.agent.v1.UpdateAgentResponse.data:type_name -> api.agent.v1.AgentInfo
+	16, // 9: api.agent.v1.PublishAgentResponse.data:type_name -> api.agent.v1.AgentVersionInfo
+	30, // 10: api.agent.v1.AgentVersionInfo.toolPresetParams:type_name -> api.agent.v1.AgentVersionInfo.ToolPresetParamsEntry
+	16, // 11: api.agent.v1.GetAgentVersionsResponse.data:type_name -> api.agent.v1.AgentVersionInfo
+	16, // 12: api.agent.v1.GetAgentVersionResponse.data:type_name -> api.agent.v1.AgentVersionInfo
+	16, // 13: api.agent.v1.GetAgentLatestVersionResponse.data:type_name -> api.agent.v1.AgentVersionInfo
+	0,  // 14: api.agent.v1.ToggleAgentStatusResponse.data:type_name -> api.agent.v1.AgentInfo
+	2,  // 15: api.agent.v1.AgentInfo.ToolPresetParamsEntry.value:type_name -> api.agent.v1.ToolPresetParams
+	2,  // 16: api.agent.v1.CreateAgentRequest.ToolPresetParamsEntry.value:type_name -> api.agent.v1.ToolPresetParams
+	3,  // 17: api.agent.v1.ToolPresetParams.ToolsEntry.value:type_name -> api.agent.v1.ToolParamCategory
+	4,  // 18: api.agent.v1.ToolParamCategory.CategoriesEntry.value:type_name -> api.agent.v1.ParamValues
+	2,  // 19: api.agent.v1.AgentVersionInfo.ToolPresetParamsEntry.value:type_name -> api.agent.v1.ToolPresetParams
+	1,  // 20: api.agent.v1.Agent.CreateAgent:input_type -> api.agent.v1.CreateAgentRequest
+	6,  // 21: api.agent.v1.Agent.GetAgentList:input_type -> api.agent.v1.GetAgentListRequest
+	8,  // 22: api.agent.v1.Agent.GetAgent:input_type -> api.agent.v1.GetAgentRequest
+	10, // 23: api.agent.v1.Agent.UpdateAgent:input_type -> api.agent.v1.UpdateAgentRequest
+	12, // 24: api.agent.v1.Agent.DeleteAgent:input_type -> api.agent.v1.DeleteAgentRequest
+	14, // 25: api.agent.v1.Agent.PublishAgent:input_type -> api.agent.v1.PublishAgentRequest
+	17, // 26: api.agent.v1.Agent.GetAgentVersions:input_type -> api.agent.v1.GetAgentVersionsRequest
+	19, // 27: api.agent.v1.Agent.GetAgentVersion:input_type -> api.agent.v1.GetAgentVersionRequest
+	21, // 28: api.agent.v1.Agent.GetAgentLatestVersion:input_type -> api.agent.v1.GetAgentLatestVersionRequest
+	23, // 29: api.agent.v1.Agent.ToggleAgentStatus:input_type -> api.agent.v1.ToggleAgentStatusRequest
+	5,  // 30: api.agent.v1.Agent.CreateAgent:output_type -> api.agent.v1.CreateAgentResponse
+	7,  // 31: api.agent.v1.Agent.GetAgentList:output_type -> api.agent.v1.GetAgentListResponse
+	9,  // 32: api.agent.v1.Agent.GetAgent:output_type -> api.agent.v1.GetAgentResponse
+	11, // 33: api.agent.v1.Agent.UpdateAgent:output_type -> api.agent.v1.UpdateAgentResponse
+	13, // 34: api.agent.v1.Agent.DeleteAgent:output_type -> api.agent.v1.DeleteAgentResponse
+	15, // 35: api.agent.v1.Agent.PublishAgent:output_type -> api.agent.v1.PublishAgentResponse
+	18, // 36: api.agent.v1.Agent.GetAgentVersions:output_type -> api.agent.v1.GetAgentVersionsResponse
+	20, // 37: api.agent.v1.Agent.GetAgentVersion:output_type -> api.agent.v1.GetAgentVersionResponse
+	22, // 38: api.agent.v1.Agent.GetAgentLatestVersion:output_type -> api.agent.v1.GetAgentLatestVersionResponse
+	24, // 39: api.agent.v1.Agent.ToggleAgentStatus:output_type -> api.agent.v1.ToggleAgentStatusResponse
+	30, // [30:40] is the sub-list for method output_type
+	20, // [20:30] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_agent_v1_agent_proto_init() }
@@ -1067,7 +1917,7 @@ func file_agent_v1_agent_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agent_v1_agent_proto_rawDesc), len(file_agent_v1_agent_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   19,
+			NumMessages:   31,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

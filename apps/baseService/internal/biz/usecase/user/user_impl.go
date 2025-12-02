@@ -2,13 +2,13 @@ package user
 
 import (
 	"context"
-	"github.com/google/uuid"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/biz/entity"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/biz/repo"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/convert"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/data/db/model"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/encrypt"
-	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/errorx/code"
+	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/errors/code"
+	"github.com/johnsonoklii/agentgo/pkg/utils"
 
 	"time"
 
@@ -45,12 +45,12 @@ func (uc *userUsecase) Register(ctx context.Context, req *RegisterRequest) error
 		userName = req.Mobile
 	}
 
-	now := time.Now().UnixMilli()
+	now := time.Now()
 
 	if userModel == nil {
 		// 创建
 		err = uc.userRepo.Create(ctx, &model.User{
-			UID:       uuid.NewString(),
+			UID:       utils.NewUUID(),
 			Mobile:    req.Mobile,
 			UserName:  req.UserName,
 			Password:  hashedPassword,
@@ -90,7 +90,7 @@ func (uc *userUsecase) Register(ctx context.Context, req *RegisterRequest) error
 
 func (uc *userUsecase) Delete(ctx context.Context, uid string) error {
 	updates := map[string]any{
-		"updated_at": time.Now().UnixMilli(),
+		"updated_at": time.Now(),
 	}
 	updates["deleted"] = true
 
@@ -105,7 +105,7 @@ func (uc *userUsecase) Delete(ctx context.Context, uid string) error {
 
 func (uc *userUsecase) UnDelete(ctx context.Context, uid string) error {
 	updates := map[string]any{
-		"deleted": time.Now().UnixMilli(),
+		"updated_at": time.Now(),
 	}
 	updates["deleted"] = false
 
@@ -129,13 +129,70 @@ func (uc *userUsecase) GetUserByMobile(ctx context.Context, mobile string) (*ent
 }
 
 func (uc *userUsecase) GetUserByID(ctx context.Context, uid string) (*entity.User, error) {
-	return nil, nil
+	userModel, err := uc.userRepo.Get(ctx, uid)
+	if err != nil {
+		uc.log.Errorf("userUsecase.GetUserByID.Get error: %v", err)
+		return nil, code.ErrUserUnKnown
+	}
+
+	if userModel == nil {
+		return nil, code.ErrUserNotFound
+	}
+
+	if userModel.Deleted {
+		return nil, code.ErrUserNotFound
+	}
+
+	return convert.UserPo2Do(userModel, ""), nil
 }
 
 func (uc *userUsecase) GetUsersByIDs(ctx context.Context, uids []string) ([]*entity.User, error) {
-	return nil, nil
+	users := make([]*entity.User, 0, len(uids))
+	for _, uid := range uids {
+		userModel, err := uc.userRepo.Get(ctx, uid)
+		if err != nil {
+			uc.log.Errorf("userUsecase.GetUsersByIDs.Get error: %v", err)
+			continue
+		}
+
+		if userModel == nil || userModel.Deleted {
+			continue
+		}
+
+		users = append(users, convert.UserPo2Do(userModel, ""))
+	}
+
+	return users, nil
 }
+
 func (uc *userUsecase) Update(ctx context.Context, req *UpdateUserRequest) error {
+	updates := make(map[string]any)
+
+	if req.UserName != "" {
+		updates["user_name"] = req.UserName
+	}
+	if req.Mobile != "" {
+		updates["mobile"] = req.Mobile
+	}
+	if req.Password != "" {
+		hashedPassword, err := encrypt.Hash(req.Password)
+		if err != nil {
+			uc.log.Errorf("userUsecase.Update.hashPassword error: %v", err)
+			return code.ErrUserUnKnown
+		}
+		updates["password"] = hashedPassword
+	}
+	if req.Gender != 0 {
+		updates["gender"] = req.Gender
+	}
+	updates["updated_at"] = time.Now()
+
+	err := uc.userRepo.Update(ctx, req.UID, updates)
+	if err != nil {
+		uc.log.Errorf("userUsecase.Update.Update error: %v", err)
+		return code.ErrUserUnKnown
+	}
+
 	return nil
 }
 func (uc *userUsecase) UpdatePassword(ctx context.Context, mobile string, password string) error {

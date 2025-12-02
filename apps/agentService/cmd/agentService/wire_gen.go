@@ -9,12 +9,11 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/johnsonoklii/agentgo/apps/agentService/internal/biz"
+	"github.com/johnsonoklii/agentgo/apps/agentService/internal/biz/usecase/agent"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/conf"
-	"github.com/johnsonoklii/agentgo/apps/agentService/internal/data/repo"
+	"github.com/johnsonoklii/agentgo/apps/agentService/internal/data/db"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/server"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/service"
-	"github.com/johnsonoklii/agentgo/pkg/jwt"
 )
 
 import (
@@ -23,19 +22,20 @@ import (
 
 // Injectors from wire.go:
 
-func wireApp(confServer *conf.Server, data *conf.Data, registry *conf.Registry, options *jwt.Options, logger log.Logger) (*kratos.App, func(), error) {
-	db := repo.NewDB(data)
-	client := repo.NewRedis(data)
-	repoData, cleanup, err := repo.NewData(data, logger, db, client)
+func wireApp(confServer *conf.Server, data *conf.Data, registry *conf.Registry, logger log.Logger) (*kratos.App, func(), error) {
+	dbData, cleanup, err := db.NewData(data, logger)
 	if err != nil {
 		return nil, nil, err
 	}
-	agentRepo := repo.NewUserRepo(repoData, logger)
-	agentService := service.NewAgentService(agentRepo, logger)
-	grpcServer := server.NewGRPCServer(confServer, agentService, logger)
-	jwtManager := biz.NewJwtManager(options, logger)
-	httpServer := server.NewHTTPServer(confServer, agentService, jwtManager, logger)
-	app := newApp(logger, grpcServer, httpServer)
+	agentRepo := db.NewAgentRepo(dbData, logger)
+	agentUsecase := agent.NewAgentUsecase(agentRepo, logger)
+	agentVersionRepo := db.NewAgentVersionRepo(dbData, logger)
+	agentVersionUsecase := agent.NewAgentVersionUsecase(agentRepo, agentVersionRepo, logger)
+	agentService := service.NewAgentService(agentUsecase, agentVersionUsecase, logger)
+	grpcServer := server.NewGRPCServer(confServer, agentService)
+	httpServer := server.NewHTTPServer(confServer, agentService)
+	registrar := server.NewRegistrar(registry)
+	app := newApp(logger, confServer, grpcServer, httpServer, registrar)
 	return app, func() {
 		cleanup()
 	}, nil

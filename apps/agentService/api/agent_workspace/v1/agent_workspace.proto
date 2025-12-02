@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package api.agent_workspace.v1;
+import "google/api/annotations.proto";
+import "agent/v1/agent.proto";
+
+option go_package = "github.com/johnsonoklii/agentgo/apps/agentService/api/agent_workspace/v1;v1";
+
+service AgentWorkspace {
+  // 获取工作区下的Agent列表
+  rpc GetWorkspaceAgents (GetWorkspaceAgentsRequest) returns (GetWorkspaceAgentsResponse) {
+    option (google.api.http) = {
+      get: "/v1/agent/workspaces/agents"
+    };
+  }
+
+  // 添加Agent到工作区
+  rpc AddAgentToWorkspace (AddAgentToWorkspaceRequest) returns (AddAgentToWorkspaceResponse) {
+    option (google.api.http) = {
+      post: "/v1/agent/workspaces/{agentId}"
+      body: "*"
+    };
+  }
+
+  // 删除工作区中的Agent
+  rpc RemoveAgentFromWorkspace (RemoveAgentFromWorkspaceRequest) returns (RemoveAgentFromWorkspaceResponse) {
+    option (google.api.http) = {
+      delete: "/v1/agent/workspaces/agents/{agentId}"
+    };
+  }
+}
+
+// 获取工作区Agent列表请求
+message GetWorkspaceAgentsRequest {
+  string workspaceId = 1;
+}
+
+// 获取工作区Agent列表响应
+message GetWorkspaceAgentsResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated agent.v1.AgentInfo data = 3;
+}
+
+// 添加Agent到工作区请求
+message AddAgentToWorkspaceRequest {
+  string agentId = 1;
+  string workspaceId = 2;
+}
+
+// 添加Agent到工作区响应
+message AddAgentToWorkspaceResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// 从工作区删除Agent请求
+message RemoveAgentFromWorkspaceRequest {
+  string agentId = 1;
+  string workspaceId = 2;
+}
+
+// 从工作区删除Agent响应
+message RemoveAgentFromWorkspaceResponse {
+  int32 code = 1;
+  string message = 2;
+}

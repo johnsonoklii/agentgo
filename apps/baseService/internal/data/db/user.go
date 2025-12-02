@@ -59,7 +59,7 @@ func (r *userRepo) Get(ctx context.Context, uid string) (*model.User, error) {
 
 func (r *userRepo) Update(ctx context.Context, uid string, updates map[string]any) error {
 	if _, ok := updates["updated_at"]; !ok {
-		updates["updated_at"] = time.Now().UnixMilli()
+		updates["updated_at"] = time.Now()
 	}
 
 	return r.data.DB.WithContext(ctx).Model(&model.User{}).Where("uid = ?", uid).Updates(updates).Error
