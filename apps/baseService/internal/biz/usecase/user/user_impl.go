@@ -6,9 +6,9 @@ import (
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/biz/repo"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/convert"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/data/db/model"
-	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/encrypt"
 	"github.com/johnsonoklii/agentgo/apps/baseService/internal/pkg/errors/code"
 	"github.com/johnsonoklii/agentgo/pkg/utils"
+	"github.com/johnsonoklii/agentgo/pkg/utils/encrypt"
 
 	"time"
 

@@ -28,6 +28,14 @@ service AgentWorkspace {
       delete: "/v1/agent/workspaces/agents/{agentId}"
     };
   }
+  
+  // 设置Agent的模型配置
+  rpc UpdateModalConfig (UpdateModalConfigRequest) returns (UpdateModalConfigResponse) {
+    option (google.api.http) = {
+      put: "/v1/agent/workspaces/{agentId}/model/config"
+      body: "*"
+    };
+  }
 }
 
 // 获取工作区Agent列表请求
@@ -64,4 +72,29 @@ message RemoveAgentFromWorkspaceRequest {
 message RemoveAgentFromWorkspaceResponse {
   int32 code = 1;
   string message = 2;
+}
+
+// 设置Agent模型配置请求
+message UpdateModalConfigRequest {
+  string agentId = 1;
+  string modalId = 2;
+  float temperature = 3;  // 0 <= x <= 2
+  float topP = 4;         // 0 <= x <= 1
+  int32 maxTokens = 6;    // >= 1
+  float reserveRatio = 7;
+  int32 SummaryThreshold = 8;
+  StrategyType strategyType = 9;
+}
+
+// 设置Agent模型配置响应
+message UpdateModalConfigResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// 策略类型枚举
+enum StrategyType {
+  NONE = 0;             // 无策略
+  SLIDING_WINDOW = 1;   // 滑动窗口
+  SUMMARIZE = 2;        // 总结
 }

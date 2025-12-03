@@ -22,6 +22,7 @@ const (
 	AgentWorkspace_GetWorkspaceAgents_FullMethodName       = "/api.agent_workspace.v1.AgentWorkspace/GetWorkspaceAgents"
 	AgentWorkspace_AddAgentToWorkspace_FullMethodName      = "/api.agent_workspace.v1.AgentWorkspace/AddAgentToWorkspace"
 	AgentWorkspace_RemoveAgentFromWorkspace_FullMethodName = "/api.agent_workspace.v1.AgentWorkspace/RemoveAgentFromWorkspace"
+	AgentWorkspace_UpdateModalConfig_FullMethodName        = "/api.agent_workspace.v1.AgentWorkspace/UpdateModalConfig"
 )
 
 // AgentWorkspaceClient is the client API for AgentWorkspace service.
@@ -34,6 +35,8 @@ type AgentWorkspaceClient interface {
 	AddAgentToWorkspace(ctx context.Context, in *AddAgentToWorkspaceRequest, opts ...grpc.CallOption) (*AddAgentToWorkspaceResponse, error)
 	// 删除工作区中的Agent
 	RemoveAgentFromWorkspace(ctx context.Context, in *RemoveAgentFromWorkspaceRequest, opts ...grpc.CallOption) (*RemoveAgentFromWorkspaceResponse, error)
+	// 设置Agent的模型配置
+	UpdateModalConfig(ctx context.Context, in *UpdateModalConfigRequest, opts ...grpc.CallOption) (*UpdateModalConfigResponse, error)
 }
 
 type agentWorkspaceClient struct {
@@ -74,6 +77,16 @@ func (c *agentWorkspaceClient) RemoveAgentFromWorkspace(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *agentWorkspaceClient) UpdateModalConfig(ctx context.Context, in *UpdateModalConfigRequest, opts ...grpc.CallOption) (*UpdateModalConfigResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateModalConfigResponse)
+	err := c.cc.Invoke(ctx, AgentWorkspace_UpdateModalConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AgentWorkspaceServer is the server API for AgentWorkspace service.
 // All implementations must embed UnimplementedAgentWorkspaceServer
 // for forward compatibility.
@@ -84,6 +97,8 @@ type AgentWorkspaceServer interface {
 	AddAgentToWorkspace(context.Context, *AddAgentToWorkspaceRequest) (*AddAgentToWorkspaceResponse, error)
 	// 删除工作区中的Agent
 	RemoveAgentFromWorkspace(context.Context, *RemoveAgentFromWorkspaceRequest) (*RemoveAgentFromWorkspaceResponse, error)
+	// 设置Agent的模型配置
+	UpdateModalConfig(context.Context, *UpdateModalConfigRequest) (*UpdateModalConfigResponse, error)
 	mustEmbedUnimplementedAgentWorkspaceServer()
 }
 
@@ -102,6 +117,9 @@ func (UnimplementedAgentWorkspaceServer) AddAgentToWorkspace(context.Context, *A
 }
 func (UnimplementedAgentWorkspaceServer) RemoveAgentFromWorkspace(context.Context, *RemoveAgentFromWorkspaceRequest) (*RemoveAgentFromWorkspaceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveAgentFromWorkspace not implemented")
+}
+func (UnimplementedAgentWorkspaceServer) UpdateModalConfig(context.Context, *UpdateModalConfigRequest) (*UpdateModalConfigResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateModalConfig not implemented")
 }
 func (UnimplementedAgentWorkspaceServer) mustEmbedUnimplementedAgentWorkspaceServer() {}
 func (UnimplementedAgentWorkspaceServer) testEmbeddedByValue()                        {}
@@ -178,6 +196,24 @@ func _AgentWorkspace_RemoveAgentFromWorkspace_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentWorkspace_UpdateModalConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateModalConfigRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentWorkspaceServer).UpdateModalConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentWorkspace_UpdateModalConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentWorkspaceServer).UpdateModalConfig(ctx, req.(*UpdateModalConfigRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AgentWorkspace_ServiceDesc is the grpc.ServiceDesc for AgentWorkspace service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -196,6 +232,10 @@ var AgentWorkspace_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveAgentFromWorkspace",
 			Handler:    _AgentWorkspace_RemoveAgentFromWorkspace_Handler,
+		},
+		{
+			MethodName: "UpdateModalConfig",
+			Handler:    _AgentWorkspace_UpdateModalConfig_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

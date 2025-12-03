@@ -37,11 +37,11 @@ func (r *agentWorkspaceRepo) GetWorkspaceAgentIDs(ctx context.Context, workspace
 		Model(&model.AgentWorkspace{}).
 		Where("workspace_id = ? AND deleted_at IS NULL", workspaceId).
 		Pluck("agent_id", &agentIDs).Error
-	
+
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return agentIDs, nil
 }
 
@@ -51,10 +51,20 @@ func (r *agentWorkspaceRepo) CheckAgentInWorkspace(ctx context.Context, workspac
 		Model(&model.AgentWorkspace{}).
 		Where("workspace_id = ? AND agent_id = ? AND deleted_at IS NULL", workspaceId, agentId).
 		Count(&count).Error
-	
+
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err
 	}
-	
+
 	return count > 0, nil
+}
+
+func (r *agentWorkspaceRepo) UpdateAgentModelConfig(ctx context.Context, workspaceAgent *model.AgentWorkspace) error {
+	return r.data.DB.WithContext(ctx).
+		Model(&model.AgentWorkspace{}).
+		Where("workspace_id = ? AND agent_id = ?", workspaceAgent.WorkspaceID, workspaceAgent.AgentID).
+		Updates(map[string]interface{}{
+			"llm_modal_config": workspaceAgent.LLMModalConfig,
+			"updated_at":       workspaceAgent.UpdatedAt,
+		}).Error
 }

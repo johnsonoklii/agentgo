@@ -10,6 +10,8 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/biz/usecase/agent"
+	"github.com/johnsonoklii/agentgo/apps/agentService/internal/biz/usecase/modal"
+	"github.com/johnsonoklii/agentgo/apps/agentService/internal/biz/usecase/provider"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/conf"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/data/db"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/server"
@@ -32,8 +34,14 @@ func wireApp(confServer *conf.Server, data *conf.Data, registry *conf.Registry, 
 	agentVersionRepo := db.NewAgentVersionRepo(dbData, logger)
 	agentVersionUsecase := agent.NewAgentVersionUsecase(agentRepo, agentVersionRepo, logger)
 	agentService := service.NewAgentService(agentUsecase, agentVersionUsecase, logger)
-	grpcServer := server.NewGRPCServer(confServer, agentService)
-	httpServer := server.NewHTTPServer(confServer, agentService)
+	providerRepo := db.NewProviderRepo(dbData, logger)
+	providerUsecase := provider.NewProviderUsecase(providerRepo, logger)
+	providerService := service.NewProviderService(providerUsecase, logger)
+	modalRepo := db.NewModalRepo(dbData, logger)
+	modalUsecase := modal.NewModalUsecase(modalRepo, logger)
+	modalService := service.NewModalService(modalUsecase, logger)
+	grpcServer := server.NewGRPCServer(confServer, agentService, providerService, modalService)
+	httpServer := server.NewHTTPServer(confServer, agentService, providerService, modalService)
 	registrar := server.NewRegistrar(registry)
 	app := newApp(logger, confServer, grpcServer, httpServer, registrar)
 	return app, func() {

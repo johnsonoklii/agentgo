@@ -101,3 +101,27 @@ func (u *agentWorkspaceUsecase) RemoveAgentFromWorkspace(ctx context.Context, ui
 
 	return nil
 }
+
+func (u *agentWorkspaceUsecase) UpdateAgentModelConfig(ctx context.Context, workspace *entity.AgentWorkspace) error {
+	// 检查Agent是否在指定的工作区中
+	exists, err := u.workspaceRepo.CheckAgentInWorkspace(ctx, workspace.WorkspaceID, workspace.AgentID)
+	if err != nil {
+		u.log.Errorf("UpdateAgentModelConfig.CheckAgentInWorkspace error: %v", err)
+		return code.ErrAgentUnKnown
+	}
+
+	if !exists {
+		u.log.Warnf("Agent %s not found in workspace %s", workspace.AgentID, workspace.WorkspaceID)
+		return code.ErrAgentNotFound
+	}
+
+	// 转换为模型对象并更新
+	model := convert.AgentWorkspaceDo2Po(workspace)
+	err = u.workspaceRepo.UpdateAgentModelConfig(ctx, model)
+	if err != nil {
+		u.log.Errorf("UpdateAgentModelConfig.UpdateAgentModelConfig error: %v", err)
+		return code.ErrAgentUnKnown
+	}
+
+	return nil
+}

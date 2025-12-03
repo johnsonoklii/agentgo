@@ -1,0 +1,174 @@
+syntax = "proto3";
+
+package api.modal.v1;
+import "google/api/annotations.proto";
+
+option go_package = "github.com/johnsonoklii/agentgo/apps/agentService/api/modal/v1;v1";
+
+service Modal {
+  // 添加模型
+  rpc CreateModal (CreateModalRequest) returns (CreateModalResponse) {
+    option (google.api.http) = {
+      post: "/v1/modals"
+      body: "*"
+    };
+  }
+
+  // 修改模型
+  rpc UpdateModal (UpdateModalRequest) returns (UpdateModalResponse) {
+    option (google.api.http) = {
+      put: "/v1/modals"
+      body: "*"
+    };
+  }
+
+  // 删除模型
+  rpc DeleteModal (DeleteModalRequest) returns (DeleteModalResponse) {
+    option (google.api.http) = {
+      delete: "/v1/modals/{modalId}"
+    };
+  }
+
+  // 修改模型状态
+  rpc UpdateModalStatus (UpdateModalStatusRequest) returns (UpdateModalStatusResponse) {
+    option (google.api.http) = {
+      put: "/v1/modals/{modalId}/status"
+      body: "*"
+    };
+  }
+
+  // 获取模型类型
+  rpc GetModalTypes (GetModalTypesRequest) returns (GetModalTypesResponse) {
+    option (google.api.http) = {
+      get: "/v1/modals/types"
+    };
+  }
+
+  // 获取所有激活模型
+  rpc GetActiveModals (GetActiveModalsRequest) returns (GetActiveModalsResponse) {
+    option (google.api.http) = {
+      get: "/v1/modals"
+    };
+  }
+  
+  // 获取用户默认的模型详情
+  rpc GetDefaultModal (GetDefaultModalRequest) returns (GetDefaultModalResponse) {
+    option (google.api.http) = {
+      get: "/v1/modals/default"
+    };
+  }
+}
+
+message ModalInfo {
+  int64 id = 1;
+  string uid = 2;
+  string providerId = 3;
+  string modalId = 4;
+  string name = 5;
+  string modelEndpoint = 6;
+  string description = 7;
+  bool isOfficial = 8;
+  string type = 9;
+  bool status = 10;
+  int64 createdAt = 11;
+  int64 updatedAt = 12;
+}
+
+message ModalConfig {
+  string modalId = 1;
+  string name = 2;
+  string modelEndpoint = 3;
+  string description = 4;
+  bool isOfficial = 5;
+  string type = 6;
+  bool status = 7;
+}
+
+// 添加模型请求
+message CreateModalRequest {
+  string providerId = 1;
+  string modalId = 2;
+  string name = 3;
+  string modelEndpoint = 4;
+  string description = 5;
+  bool isOfficial = 6;
+  string type = 7;
+  bool status = 8;
+}
+
+message CreateModalResponse {
+  int32 code = 1;
+  string message = 2;
+  ModalInfo data = 3;
+}
+
+// 修改模型请求
+message UpdateModalRequest {
+  string modalId = 1;
+  string providerId = 2;
+  string name = 3;
+  string modelEndpoint = 4;
+  string description = 5;
+  bool isOfficial = 6;
+  string type = 7;
+  bool status = 8;
+}
+
+message UpdateModalResponse {
+  int32 code = 1;
+  string message = 2;
+  ModalInfo data = 3;
+}
+
+// 删除模型请求
+message DeleteModalRequest {
+  string modalId = 1;
+}
+
+message DeleteModalResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// 修改模型状态请求
+message UpdateModalStatusRequest {
+  string modalId = 1;
+  bool status = 2;
+}
+
+message UpdateModalStatusResponse {
+  int32 code = 1;
+  string message = 2;
+  ModalInfo data = 3;
+}
+
+// 获取模型类型请求
+message GetModalTypesRequest {
+}
+
+message GetModalTypesResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated string data = 3;
+}
+
+// 获取所有激活模型请求
+message GetActiveModalsRequest {
+  string modelType = 1;
+}
+
+message GetActiveModalsResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated ModalInfo data = 3;
+}
+
+// 获取默认模型请求
+message GetDefaultModalRequest {
+}
+
+message GetDefaultModalResponse {
+  int32 code = 1;
+  string message = 2;
+  ModalInfo data = 3;
+}

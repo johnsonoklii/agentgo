@@ -22,6 +22,7 @@ const _ = http.SupportPackageIsVersion1
 const OperationAgentWorkspaceAddAgentToWorkspace = "/api.agent_workspace.v1.AgentWorkspace/AddAgentToWorkspace"
 const OperationAgentWorkspaceGetWorkspaceAgents = "/api.agent_workspace.v1.AgentWorkspace/GetWorkspaceAgents"
 const OperationAgentWorkspaceRemoveAgentFromWorkspace = "/api.agent_workspace.v1.AgentWorkspace/RemoveAgentFromWorkspace"
+const OperationAgentWorkspaceUpdateModalConfig = "/api.agent_workspace.v1.AgentWorkspace/UpdateModalConfig"
 
 type AgentWorkspaceHTTPServer interface {
 	// AddAgentToWorkspace 添加Agent到工作区
@@ -30,6 +31,8 @@ type AgentWorkspaceHTTPServer interface {
 	GetWorkspaceAgents(context.Context, *GetWorkspaceAgentsRequest) (*GetWorkspaceAgentsResponse, error)
 	// RemoveAgentFromWorkspace 删除工作区中的Agent
 	RemoveAgentFromWorkspace(context.Context, *RemoveAgentFromWorkspaceRequest) (*RemoveAgentFromWorkspaceResponse, error)
+	// UpdateModalConfig 设置Agent的模型配置
+	UpdateModalConfig(context.Context, *UpdateModalConfigRequest) (*UpdateModalConfigResponse, error)
 }
 
 func RegisterAgentWorkspaceHTTPServer(s *http.Server, srv AgentWorkspaceHTTPServer) {
@@ -37,6 +40,7 @@ func RegisterAgentWorkspaceHTTPServer(s *http.Server, srv AgentWorkspaceHTTPServ
 	r.GET("/v1/agent/workspaces/agents", _AgentWorkspace_GetWorkspaceAgents0_HTTP_Handler(srv))
 	r.POST("/v1/agent/workspaces/{agentId}", _AgentWorkspace_AddAgentToWorkspace0_HTTP_Handler(srv))
 	r.DELETE("/v1/agent/workspaces/agents/{agentId}", _AgentWorkspace_RemoveAgentFromWorkspace0_HTTP_Handler(srv))
+	r.PUT("/v1/agent/workspaces/{agentId}/model/config", _AgentWorkspace_UpdateModalConfig0_HTTP_Handler(srv))
 }
 
 func _AgentWorkspace_GetWorkspaceAgents0_HTTP_Handler(srv AgentWorkspaceHTTPServer) func(ctx http.Context) error {
@@ -105,10 +109,36 @@ func _AgentWorkspace_RemoveAgentFromWorkspace0_HTTP_Handler(srv AgentWorkspaceHT
 	}
 }
 
+func _AgentWorkspace_UpdateModalConfig0_HTTP_Handler(srv AgentWorkspaceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateModalConfigRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAgentWorkspaceUpdateModalConfig)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateModalConfig(ctx, req.(*UpdateModalConfigRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UpdateModalConfigResponse)
+		return ctx.Result(200, reply)
+	}
+}
+
 type AgentWorkspaceHTTPClient interface {
 	AddAgentToWorkspace(ctx context.Context, req *AddAgentToWorkspaceRequest, opts ...http.CallOption) (rsp *AddAgentToWorkspaceResponse, err error)
 	GetWorkspaceAgents(ctx context.Context, req *GetWorkspaceAgentsRequest, opts ...http.CallOption) (rsp *GetWorkspaceAgentsResponse, err error)
 	RemoveAgentFromWorkspace(ctx context.Context, req *RemoveAgentFromWorkspaceRequest, opts ...http.CallOption) (rsp *RemoveAgentFromWorkspaceResponse, err error)
+	UpdateModalConfig(ctx context.Context, req *UpdateModalConfigRequest, opts ...http.CallOption) (rsp *UpdateModalConfigResponse, err error)
 }
 
 type AgentWorkspaceHTTPClientImpl struct {
@@ -152,6 +182,19 @@ func (c *AgentWorkspaceHTTPClientImpl) RemoveAgentFromWorkspace(ctx context.Cont
 	opts = append(opts, http.Operation(OperationAgentWorkspaceRemoveAgentFromWorkspace))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *AgentWorkspaceHTTPClientImpl) UpdateModalConfig(ctx context.Context, in *UpdateModalConfigRequest, opts ...http.CallOption) (*UpdateModalConfigResponse, error) {
+	var out UpdateModalConfigResponse
+	pattern := "/v1/agent/workspaces/{agentId}/model/config"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationAgentWorkspaceUpdateModalConfig))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

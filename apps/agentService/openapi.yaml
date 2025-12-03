@@ -72,6 +72,31 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.agent_workspace.v1.AddAgentToWorkspaceResponse'
+    /v1/agent/workspaces/{agentId}/model/config:
+        put:
+            tags:
+                - AgentWorkspace
+            description: 设置Agent的模型配置
+            operationId: AgentWorkspace_UpdateModalConfig
+            parameters:
+                - name: agentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.agent_workspace.v1.UpdateModalConfigRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.agent_workspace.v1.UpdateModalConfigResponse'
     /v1/agents:
         get:
             tags:
@@ -271,6 +296,248 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.agent.v1.GetAgentVersionResponse'
+    /v1/modals:
+        get:
+            tags:
+                - Modal
+            description: 获取所有激活模型
+            operationId: Modal_GetActiveModals
+            parameters:
+                - name: modelType
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.modal.v1.GetActiveModalsResponse'
+        put:
+            tags:
+                - Modal
+            description: 修改模型
+            operationId: Modal_UpdateModal
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.modal.v1.UpdateModalRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.modal.v1.UpdateModalResponse'
+        post:
+            tags:
+                - Modal
+            description: 添加模型
+            operationId: Modal_CreateModal
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.modal.v1.CreateModalRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.modal.v1.CreateModalResponse'
+    /v1/modals/default:
+        get:
+            tags:
+                - Modal
+            description: 获取用户默认的模型详情
+            operationId: Modal_GetDefaultModal
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.modal.v1.GetDefaultModalResponse'
+    /v1/modals/types:
+        get:
+            tags:
+                - Modal
+            description: 获取模型类型
+            operationId: Modal_GetModalTypes
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.modal.v1.GetModalTypesResponse'
+    /v1/modals/{modalId}:
+        delete:
+            tags:
+                - Modal
+            description: 删除模型
+            operationId: Modal_DeleteModal
+            parameters:
+                - name: modalId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.modal.v1.DeleteModalResponse'
+    /v1/modals/{modalId}/status:
+        put:
+            tags:
+                - Modal
+            description: 修改模型状态
+            operationId: Modal_UpdateModalStatus
+            parameters:
+                - name: modalId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.modal.v1.UpdateModalStatusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.modal.v1.UpdateModalStatusResponse'
+    /v1/providers:
+        post:
+            tags:
+                - Provider
+            description: 创建服务提供商
+            operationId: Provider_CreateProvider
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.provider.v1.CreateProviderRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.provider.v1.CreateProviderResponse'
+    /v1/providers/protocols:
+        get:
+            tags:
+                - Provider
+            description: 获取服务提供商列表
+            operationId: Provider_GetProviderList
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.provider.v1.GetProviderProtocolListResponse'
+    /v1/providers/{providerId}:
+        get:
+            tags:
+                - Provider
+            description: 获取服务商详细信息
+            operationId: Provider_GetProvider
+            parameters:
+                - name: providerId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.provider.v1.GetProviderResponse'
+        put:
+            tags:
+                - Provider
+            description: 更新服务提供商
+            operationId: Provider_UpdateProvider
+            parameters:
+                - name: providerId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.provider.v1.UpdateProviderRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.provider.v1.UpdateProviderResponse'
+        delete:
+            tags:
+                - Provider
+            description: 删除服务提供商
+            operationId: Provider_DeleteProvider
+            parameters:
+                - name: providerId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.provider.v1.DeleteProviderResponse'
+    /v1/providers/{providerId}/status:
+        put:
+            tags:
+                - Provider
+            description: 修改服务商状态
+            operationId: Provider_UpdateProviderStatus
+            parameters:
+                - name: providerId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.provider.v1.UpdateProviderStatusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.provider.v1.UpdateProviderStatusResponse'
 components:
     schemas:
         api.agent.v1.AgentInfo:
@@ -575,6 +842,317 @@ components:
                 message:
                     type: string
             description: 从工作区删除Agent响应
+        api.agent_workspace.v1.UpdateModalConfigRequest:
+            type: object
+            properties:
+                agentId:
+                    type: string
+                modalId:
+                    type: string
+                temperature:
+                    type: number
+                    format: float
+                topP:
+                    type: number
+                    format: float
+                maxTokens:
+                    type: integer
+                    format: int32
+                reserveRatio:
+                    type: number
+                    format: float
+                SummaryThreshold:
+                    type: integer
+                    format: int32
+                strategyType:
+                    type: integer
+                    format: enum
+            description: 设置Agent模型配置请求
+        api.agent_workspace.v1.UpdateModalConfigResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+            description: 设置Agent模型配置响应
+        api.modal.v1.CreateModalRequest:
+            type: object
+            properties:
+                providerId:
+                    type: string
+                modalId:
+                    type: string
+                name:
+                    type: string
+                modelEndpoint:
+                    type: string
+                description:
+                    type: string
+                isOfficial:
+                    type: boolean
+                type:
+                    type: string
+                status:
+                    type: boolean
+            description: 添加模型请求
+        api.modal.v1.CreateModalResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.modal.v1.ModalInfo'
+        api.modal.v1.DeleteModalResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+        api.modal.v1.GetActiveModalsResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.modal.v1.ModalInfo'
+        api.modal.v1.GetDefaultModalResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.modal.v1.ModalInfo'
+        api.modal.v1.GetModalTypesResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    type: array
+                    items:
+                        type: string
+        api.modal.v1.ModalInfo:
+            type: object
+            properties:
+                id:
+                    type: string
+                uid:
+                    type: string
+                providerId:
+                    type: string
+                modalId:
+                    type: string
+                name:
+                    type: string
+                modelEndpoint:
+                    type: string
+                description:
+                    type: string
+                isOfficial:
+                    type: boolean
+                type:
+                    type: string
+                status:
+                    type: boolean
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+        api.modal.v1.UpdateModalRequest:
+            type: object
+            properties:
+                modalId:
+                    type: string
+                providerId:
+                    type: string
+                name:
+                    type: string
+                modelEndpoint:
+                    type: string
+                description:
+                    type: string
+                isOfficial:
+                    type: boolean
+                type:
+                    type: string
+                status:
+                    type: boolean
+            description: 修改模型请求
+        api.modal.v1.UpdateModalResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.modal.v1.ModalInfo'
+        api.modal.v1.UpdateModalStatusRequest:
+            type: object
+            properties:
+                modalId:
+                    type: string
+                status:
+                    type: boolean
+            description: 修改模型状态请求
+        api.modal.v1.UpdateModalStatusResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.modal.v1.ModalInfo'
+        api.provider.v1.CreateProviderRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                description:
+                    type: string
+                protocol:
+                    type: string
+                status:
+                    type: boolean
+                config:
+                    $ref: '#/components/schemas/api.provider.v1.ProviderConfig'
+            description: 创建服务提供商
+        api.provider.v1.CreateProviderResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.provider.v1.ProviderInfo'
+        api.provider.v1.DeleteProviderResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+        api.provider.v1.GetProviderProtocolListResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    type: array
+                    items:
+                        type: string
+        api.provider.v1.GetProviderResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.provider.v1.ProviderInfo'
+        api.provider.v1.ProviderConfig:
+            type: object
+            properties:
+                apiKey:
+                    type: string
+                baseUrl:
+                    type: string
+        api.provider.v1.ProviderInfo:
+            type: object
+            properties:
+                providerId:
+                    type: string
+                uid:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                protocol:
+                    type: string
+                status:
+                    type: boolean
+                config:
+                    $ref: '#/components/schemas/api.provider.v1.ProviderConfig'
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+            description: Provider信息
+        api.provider.v1.UpdateProviderRequest:
+            type: object
+            properties:
+                providerId:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                protocol:
+                    type: string
+                status:
+                    type: boolean
+                config:
+                    $ref: '#/components/schemas/api.provider.v1.ProviderConfig'
+            description: 更新服务提供商
+        api.provider.v1.UpdateProviderResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.provider.v1.ProviderInfo'
+        api.provider.v1.UpdateProviderStatusRequest:
+            type: object
+            properties:
+                providerId:
+                    type: string
+                status:
+                    type: boolean
+            description: 修改服务商状态
+        api.provider.v1.UpdateProviderStatusResponse:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+                data:
+                    $ref: '#/components/schemas/api.provider.v1.ProviderInfo'
 tags:
     - name: Agent
     - name: AgentWorkspace
+    - name: Modal
+    - name: Provider

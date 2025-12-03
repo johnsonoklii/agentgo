@@ -2,6 +2,8 @@ package server
 
 import (
 	v1 "github.com/johnsonoklii/agentgo/apps/agentService/api/agent/v1"
+	modalv1 "github.com/johnsonoklii/agentgo/apps/agentService/api/modal/v1"
+	providerv1 "github.com/johnsonoklii/agentgo/apps/agentService/api/provider/v1"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/conf"
 	"github.com/johnsonoklii/agentgo/apps/agentService/internal/service"
 
@@ -10,7 +12,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, agentService *service.AgentService) *grpc.Server {
+func NewGRPCServer(c *conf.Server, agentService *service.AgentService, providerService *service.ProviderService, modalService *service.ModalService) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -27,5 +29,7 @@ func NewGRPCServer(c *conf.Server, agentService *service.AgentService) *grpc.Ser
 	}
 	srv := grpc.NewServer(opts...)
 	v1.RegisterAgentServer(srv, agentService)
+	providerv1.RegisterProviderServer(srv, providerService)
+	modalv1.RegisterModalServer(srv, modalService)
 	return srv
 }

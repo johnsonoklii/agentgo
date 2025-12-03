@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+package api.provider.v1;
+import "google/api/annotations.proto";
+
+option go_package = "github.com/johnsonoklii/agentgo/apps/agentService/api/provider/v1;v1";
+
+service Provider {
+  // 获取服务商详细信息
+  rpc GetProvider (GetProviderRequest) returns (GetProviderResponse) {
+    option (google.api.http) = {
+      get: "/v1/providers/{providerId}"
+    };
+  }
+
+  // 创建服务提供商
+  rpc CreateProvider (CreateProviderRequest) returns (CreateProviderResponse) {
+    option (google.api.http) = {
+      post: "/v1/providers"
+      body: "*"
+    };
+  }
+
+  // 更新服务提供商
+  rpc UpdateProvider (UpdateProviderRequest) returns (UpdateProviderResponse) {
+    option (google.api.http) = {
+      put: "/v1/providers/{providerId}"
+      body: "*"
+    };
+  }
+
+  // 修改服务商状态
+  rpc UpdateProviderStatus (UpdateProviderStatusRequest) returns (UpdateProviderStatusResponse) {
+    option (google.api.http) = {
+      put: "/v1/providers/{providerId}/status"
+      body: "*"
+    };
+  }
+
+  // 删除服务提供商
+  rpc DeleteProvider (DeleteProviderRequest) returns (DeleteProviderResponse) {
+    option (google.api.http) = {
+      delete: "/v1/providers/{providerId}"
+    };
+  }
+
+  // 获取服务提供商列表
+  rpc GetProviderList (GetProviderProtocolListRequest) returns (GetProviderProtocolListResponse) {
+    option (google.api.http) = {
+      get: "/v1/providers/protocols"
+    };
+  }
+}
+
+message ProviderConfig {
+  string apiKey = 1;
+  string baseUrl = 2;
+}
+
+// Provider信息
+message ProviderInfo {
+  string providerId = 1;         // 服务商ID
+  string uid = 2;
+  string name = 3;               // 服务商名称
+  string description = 4;        // 服务商描述
+  string protocol = 5;       // 服务商类型 (如: openai, anthropic, azure等)
+  bool status = 6;              // 状态: 1-启用, 2-禁用
+  ProviderConfig config = 7;            // 配置值
+  int64 createdAt = 8;          // 创建时间
+  int64 updatedAt = 9;          // 更新时间
+}
+
+// 获取服务商详细信息
+message GetProviderRequest {
+  string providerId = 1;
+}
+
+message GetProviderResponse {
+  int32 code = 1;
+  string message = 2;
+  ProviderInfo data = 3;
+}
+
+// 创建服务提供商
+message CreateProviderRequest {
+  string name = 1;               // 服务商名称
+  string description = 2;        // 服务商描述
+  string protocol = 3;           // 服务商类型 (如: openai, anthropic, azure等)
+  bool status = 4;               // 状态: 1-启用, 2-禁用
+  ProviderConfig config = 5;     // 配置值
+}
+
+message CreateProviderResponse {
+  int32 code = 1;
+  string message = 2;
+  ProviderInfo data = 3;
+}
+
+// 更新服务提供商
+message UpdateProviderRequest {
+  string providerId = 1;         // 服务商ID
+  string name = 2;               // 服务商名称
+  string description = 3;        // 服务商描述
+  string protocol = 4;           // 服务商类型 (如: openai, anthropic, azure等)
+  bool status = 5;               // 状态: 1-启用, 2-禁用
+  ProviderConfig config = 6;     // 配置值
+}
+
+message UpdateProviderResponse {
+  int32 code = 1;
+  string message = 2;
+  ProviderInfo data = 3;
+}
+
+// 修改服务商状态
+message UpdateProviderStatusRequest {
+  string providerId = 1;         // 服务商ID
+  bool status = 2;               // 状态: true-启用, false-禁用
+}
+
+message UpdateProviderStatusResponse {
+  int32 code = 1;
+  string message = 2;
+  ProviderInfo data = 3;
+}
+
+// 删除服务提供商
+message DeleteProviderRequest {
+  string providerId = 1;
+}
+
+message DeleteProviderResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// 获取服务提供商列表
+message GetProviderProtocolListRequest {
+}
+
+message GetProviderProtocolListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated string data = 3; // protocol列表
+}

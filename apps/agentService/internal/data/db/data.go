@@ -20,6 +20,8 @@ var ProviderSet = wire.NewSet(
 	NewAgentRepo,
 	NewAgentWorkspaceRepo,
 	NewAgentVersionRepo,
+	NewProviderRepo,
+	NewModalRepo,
 )
 
 type Data struct {

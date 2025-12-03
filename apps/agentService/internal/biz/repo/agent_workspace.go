@@ -14,4 +14,6 @@ type AgentWorkspaceRepo interface {
 	GetWorkspaceAgentIDs(ctx context.Context, workspaceId string) ([]string, error)
 	// CheckAgentInWorkspace 检查Agent是否在工作区中
 	CheckAgentInWorkspace(ctx context.Context, workspaceId, agentId string) (bool, error)
+	// UpdateAgentModelConfig 更新Agent的模型配置
+	UpdateAgentModelConfig(ctx context.Context, workspaceAgent *model.AgentWorkspace) error
 }

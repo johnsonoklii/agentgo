@@ -23,6 +23,56 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 策略类型枚举
+type StrategyType int32
+
+const (
+	StrategyType_NONE           StrategyType = 0 // 无策略
+	StrategyType_SLIDING_WINDOW StrategyType = 1 // 滑动窗口
+	StrategyType_SUMMARIZE      StrategyType = 2 // 总结
+)
+
+// Enum value maps for StrategyType.
+var (
+	StrategyType_name = map[int32]string{
+		0: "NONE",
+		1: "SLIDING_WINDOW",
+		2: "SUMMARIZE",
+	}
+	StrategyType_value = map[string]int32{
+		"NONE":           0,
+		"SLIDING_WINDOW": 1,
+		"SUMMARIZE":      2,
+	}
+)
+
+func (x StrategyType) Enum() *StrategyType {
+	p := new(StrategyType)
+	*p = x
+	return p
+}
+
+func (x StrategyType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (StrategyType) Descriptor() protoreflect.EnumDescriptor {
+	return file_agent_workspace_v1_agent_workspace_proto_enumTypes[0].Descriptor()
+}
+
+func (StrategyType) Type() protoreflect.EnumType {
+	return &file_agent_workspace_v1_agent_workspace_proto_enumTypes[0]
+}
+
+func (x StrategyType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use StrategyType.Descriptor instead.
+func (StrategyType) EnumDescriptor() ([]byte, []int) {
+	return file_agent_workspace_v1_agent_workspace_proto_rawDescGZIP(), []int{0}
+}
+
 // 获取工作区Agent列表请求
 type GetWorkspaceAgentsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -341,6 +391,160 @@ func (x *RemoveAgentFromWorkspaceResponse) GetMessage() string {
 	return ""
 }
 
+// 设置Agent模型配置请求
+type UpdateModalConfigRequest struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	AgentId          string                 `protobuf:"bytes,1,opt,name=agentId,proto3" json:"agentId,omitempty"`
+	ModalId          string                 `protobuf:"bytes,2,opt,name=modalId,proto3" json:"modalId,omitempty"`
+	Temperature      float32                `protobuf:"fixed32,3,opt,name=temperature,proto3" json:"temperature,omitempty"` // 0 <= x <= 2
+	TopP             float32                `protobuf:"fixed32,4,opt,name=topP,proto3" json:"topP,omitempty"`               // 0 <= x <= 1
+	MaxTokens        int32                  `protobuf:"varint,6,opt,name=maxTokens,proto3" json:"maxTokens,omitempty"`      // >= 1
+	ReserveRatio     float32                `protobuf:"fixed32,7,opt,name=reserveRatio,proto3" json:"reserveRatio,omitempty"`
+	SummaryThreshold int32                  `protobuf:"varint,8,opt,name=SummaryThreshold,proto3" json:"SummaryThreshold,omitempty"`
+	StrategyType     StrategyType           `protobuf:"varint,9,opt,name=strategyType,proto3,enum=api.agent_workspace.v1.StrategyType" json:"strategyType,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *UpdateModalConfigRequest) Reset() {
+	*x = UpdateModalConfigRequest{}
+	mi := &file_agent_workspace_v1_agent_workspace_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateModalConfigRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateModalConfigRequest) ProtoMessage() {}
+
+func (x *UpdateModalConfigRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_workspace_v1_agent_workspace_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateModalConfigRequest.ProtoReflect.Descriptor instead.
+func (*UpdateModalConfigRequest) Descriptor() ([]byte, []int) {
+	return file_agent_workspace_v1_agent_workspace_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *UpdateModalConfigRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *UpdateModalConfigRequest) GetModalId() string {
+	if x != nil {
+		return x.ModalId
+	}
+	return ""
+}
+
+func (x *UpdateModalConfigRequest) GetTemperature() float32 {
+	if x != nil {
+		return x.Temperature
+	}
+	return 0
+}
+
+func (x *UpdateModalConfigRequest) GetTopP() float32 {
+	if x != nil {
+		return x.TopP
+	}
+	return 0
+}
+
+func (x *UpdateModalConfigRequest) GetMaxTokens() int32 {
+	if x != nil {
+		return x.MaxTokens
+	}
+	return 0
+}
+
+func (x *UpdateModalConfigRequest) GetReserveRatio() float32 {
+	if x != nil {
+		return x.ReserveRatio
+	}
+	return 0
+}
+
+func (x *UpdateModalConfigRequest) GetSummaryThreshold() int32 {
+	if x != nil {
+		return x.SummaryThreshold
+	}
+	return 0
+}
+
+func (x *UpdateModalConfigRequest) GetStrategyType() StrategyType {
+	if x != nil {
+		return x.StrategyType
+	}
+	return StrategyType_NONE
+}
+
+// 设置Agent模型配置响应
+type UpdateModalConfigResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateModalConfigResponse) Reset() {
+	*x = UpdateModalConfigResponse{}
+	mi := &file_agent_workspace_v1_agent_workspace_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateModalConfigResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateModalConfigResponse) ProtoMessage() {}
+
+func (x *UpdateModalConfigResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_agent_workspace_v1_agent_workspace_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateModalConfigResponse.ProtoReflect.Descriptor instead.
+func (*UpdateModalConfigResponse) Descriptor() ([]byte, []int) {
+	return file_agent_workspace_v1_agent_workspace_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UpdateModalConfigResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *UpdateModalConfigResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_agent_workspace_v1_agent_workspace_proto protoreflect.FileDescriptor
 
 const file_agent_workspace_v1_agent_workspace_proto_rawDesc = "" +
@@ -363,11 +567,28 @@ const file_agent_workspace_v1_agent_workspace_proto_rawDesc = "" +
 	"\vworkspaceId\x18\x02 \x01(\tR\vworkspaceId\"P\n" +
 	" RemoveAgentFromWorkspaceResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\x9e\x04\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xbc\x02\n" +
+	"\x18UpdateModalConfigRequest\x12\x18\n" +
+	"\aagentId\x18\x01 \x01(\tR\aagentId\x12\x18\n" +
+	"\amodalId\x18\x02 \x01(\tR\amodalId\x12 \n" +
+	"\vtemperature\x18\x03 \x01(\x02R\vtemperature\x12\x12\n" +
+	"\x04topP\x18\x04 \x01(\x02R\x04topP\x12\x1c\n" +
+	"\tmaxTokens\x18\x06 \x01(\x05R\tmaxTokens\x12\"\n" +
+	"\freserveRatio\x18\a \x01(\x02R\freserveRatio\x12*\n" +
+	"\x10SummaryThreshold\x18\b \x01(\x05R\x10SummaryThreshold\x12H\n" +
+	"\fstrategyType\x18\t \x01(\x0e2$.api.agent_workspace.v1.StrategyTypeR\fstrategyType\"I\n" +
+	"\x19UpdateModalConfigResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage*;\n" +
+	"\fStrategyType\x12\b\n" +
+	"\x04NONE\x10\x00\x12\x12\n" +
+	"\x0eSLIDING_WINDOW\x10\x01\x12\r\n" +
+	"\tSUMMARIZE\x10\x022\xd1\x05\n" +
 	"\x0eAgentWorkspace\x12\xa0\x01\n" +
 	"\x12GetWorkspaceAgents\x121.api.agent_workspace.v1.GetWorkspaceAgentsRequest\x1a2.api.agent_workspace.v1.GetWorkspaceAgentsResponse\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/agent/workspaces/agents\x12\xa9\x01\n" +
 	"\x13AddAgentToWorkspace\x122.api.agent_workspace.v1.AddAgentToWorkspaceRequest\x1a3.api.agent_workspace.v1.AddAgentToWorkspaceResponse\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/v1/agent/workspaces/{agentId}\x12\xbc\x01\n" +
-	"\x18RemoveAgentFromWorkspace\x127.api.agent_workspace.v1.RemoveAgentFromWorkspaceRequest\x1a8.api.agent_workspace.v1.RemoveAgentFromWorkspaceResponse\"-\x82\xd3\xe4\x93\x02'*%/v1/agent/workspaces/agents/{agentId}BMZKgithub.com/johnsonoklii/agentgo/apps/agentService/api/agent_workspace/v1;v1b\x06proto3"
+	"\x18RemoveAgentFromWorkspace\x127.api.agent_workspace.v1.RemoveAgentFromWorkspaceRequest\x1a8.api.agent_workspace.v1.RemoveAgentFromWorkspaceResponse\"-\x82\xd3\xe4\x93\x02'*%/v1/agent/workspaces/agents/{agentId}\x12\xb0\x01\n" +
+	"\x11UpdateModalConfig\x120.api.agent_workspace.v1.UpdateModalConfigRequest\x1a1.api.agent_workspace.v1.UpdateModalConfigResponse\"6\x82\xd3\xe4\x93\x020:\x01*\x1a+/v1/agent/workspaces/{agentId}/model/configBMZKgithub.com/johnsonoklii/agentgo/apps/agentService/api/agent_workspace/v1;v1b\x06proto3"
 
 var (
 	file_agent_workspace_v1_agent_workspace_proto_rawDescOnce sync.Once
@@ -381,29 +602,36 @@ func file_agent_workspace_v1_agent_workspace_proto_rawDescGZIP() []byte {
 	return file_agent_workspace_v1_agent_workspace_proto_rawDescData
 }
 
-var file_agent_workspace_v1_agent_workspace_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_agent_workspace_v1_agent_workspace_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_agent_workspace_v1_agent_workspace_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_agent_workspace_v1_agent_workspace_proto_goTypes = []any{
-	(*GetWorkspaceAgentsRequest)(nil),        // 0: api.agent_workspace.v1.GetWorkspaceAgentsRequest
-	(*GetWorkspaceAgentsResponse)(nil),       // 1: api.agent_workspace.v1.GetWorkspaceAgentsResponse
-	(*AddAgentToWorkspaceRequest)(nil),       // 2: api.agent_workspace.v1.AddAgentToWorkspaceRequest
-	(*AddAgentToWorkspaceResponse)(nil),      // 3: api.agent_workspace.v1.AddAgentToWorkspaceResponse
-	(*RemoveAgentFromWorkspaceRequest)(nil),  // 4: api.agent_workspace.v1.RemoveAgentFromWorkspaceRequest
-	(*RemoveAgentFromWorkspaceResponse)(nil), // 5: api.agent_workspace.v1.RemoveAgentFromWorkspaceResponse
-	(*v1.AgentInfo)(nil),                     // 6: api.agent.v1.AgentInfo
+	(StrategyType)(0),                        // 0: api.agent_workspace.v1.StrategyType
+	(*GetWorkspaceAgentsRequest)(nil),        // 1: api.agent_workspace.v1.GetWorkspaceAgentsRequest
+	(*GetWorkspaceAgentsResponse)(nil),       // 2: api.agent_workspace.v1.GetWorkspaceAgentsResponse
+	(*AddAgentToWorkspaceRequest)(nil),       // 3: api.agent_workspace.v1.AddAgentToWorkspaceRequest
+	(*AddAgentToWorkspaceResponse)(nil),      // 4: api.agent_workspace.v1.AddAgentToWorkspaceResponse
+	(*RemoveAgentFromWorkspaceRequest)(nil),  // 5: api.agent_workspace.v1.RemoveAgentFromWorkspaceRequest
+	(*RemoveAgentFromWorkspaceResponse)(nil), // 6: api.agent_workspace.v1.RemoveAgentFromWorkspaceResponse
+	(*UpdateModalConfigRequest)(nil),         // 7: api.agent_workspace.v1.UpdateModalConfigRequest
+	(*UpdateModalConfigResponse)(nil),        // 8: api.agent_workspace.v1.UpdateModalConfigResponse
+	(*v1.AgentInfo)(nil),                     // 9: api.agent.v1.AgentInfo
 }
 var file_agent_workspace_v1_agent_workspace_proto_depIdxs = []int32{
-	6, // 0: api.agent_workspace.v1.GetWorkspaceAgentsResponse.data:type_name -> api.agent.v1.AgentInfo
-	0, // 1: api.agent_workspace.v1.AgentWorkspace.GetWorkspaceAgents:input_type -> api.agent_workspace.v1.GetWorkspaceAgentsRequest
-	2, // 2: api.agent_workspace.v1.AgentWorkspace.AddAgentToWorkspace:input_type -> api.agent_workspace.v1.AddAgentToWorkspaceRequest
-	4, // 3: api.agent_workspace.v1.AgentWorkspace.RemoveAgentFromWorkspace:input_type -> api.agent_workspace.v1.RemoveAgentFromWorkspaceRequest
-	1, // 4: api.agent_workspace.v1.AgentWorkspace.GetWorkspaceAgents:output_type -> api.agent_workspace.v1.GetWorkspaceAgentsResponse
-	3, // 5: api.agent_workspace.v1.AgentWorkspace.AddAgentToWorkspace:output_type -> api.agent_workspace.v1.AddAgentToWorkspaceResponse
-	5, // 6: api.agent_workspace.v1.AgentWorkspace.RemoveAgentFromWorkspace:output_type -> api.agent_workspace.v1.RemoveAgentFromWorkspaceResponse
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	9, // 0: api.agent_workspace.v1.GetWorkspaceAgentsResponse.data:type_name -> api.agent.v1.AgentInfo
+	0, // 1: api.agent_workspace.v1.UpdateModalConfigRequest.strategyType:type_name -> api.agent_workspace.v1.StrategyType
+	1, // 2: api.agent_workspace.v1.AgentWorkspace.GetWorkspaceAgents:input_type -> api.agent_workspace.v1.GetWorkspaceAgentsRequest
+	3, // 3: api.agent_workspace.v1.AgentWorkspace.AddAgentToWorkspace:input_type -> api.agent_workspace.v1.AddAgentToWorkspaceRequest
+	5, // 4: api.agent_workspace.v1.AgentWorkspace.RemoveAgentFromWorkspace:input_type -> api.agent_workspace.v1.RemoveAgentFromWorkspaceRequest
+	7, // 5: api.agent_workspace.v1.AgentWorkspace.UpdateModalConfig:input_type -> api.agent_workspace.v1.UpdateModalConfigRequest
+	2, // 6: api.agent_workspace.v1.AgentWorkspace.GetWorkspaceAgents:output_type -> api.agent_workspace.v1.GetWorkspaceAgentsResponse
+	4, // 7: api.agent_workspace.v1.AgentWorkspace.AddAgentToWorkspace:output_type -> api.agent_workspace.v1.AddAgentToWorkspaceResponse
+	6, // 8: api.agent_workspace.v1.AgentWorkspace.RemoveAgentFromWorkspace:output_type -> api.agent_workspace.v1.RemoveAgentFromWorkspaceResponse
+	8, // 9: api.agent_workspace.v1.AgentWorkspace.UpdateModalConfig:output_type -> api.agent_workspace.v1.UpdateModalConfigResponse
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_agent_workspace_v1_agent_workspace_proto_init() }
@@ -416,13 +644,14 @@ func file_agent_workspace_v1_agent_workspace_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_agent_workspace_v1_agent_workspace_proto_rawDesc), len(file_agent_workspace_v1_agent_workspace_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   6,
+			NumEnums:      1,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_agent_workspace_v1_agent_workspace_proto_goTypes,
 		DependencyIndexes: file_agent_workspace_v1_agent_workspace_proto_depIdxs,
+		EnumInfos:         file_agent_workspace_v1_agent_workspace_proto_enumTypes,
 		MessageInfos:      file_agent_workspace_v1_agent_workspace_proto_msgTypes,
 	}.Build()
 	File_agent_workspace_v1_agent_workspace_proto = out.File
